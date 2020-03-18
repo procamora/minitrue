@@ -1,0 +1,3 @@
+[submodule "sqlite"]
+	path = sqlite
+	url = git@github.com:procamora/python3-sqlite.git

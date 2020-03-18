@@ -1,0 +1,12 @@
+# Obtener interfaces locales y sus MACs
+netifaces
+
+# Obtener el fabricante de una MAC
+mac-vendor-lookup
+
+# nmap
+python-nmap
+
+# Logging con color
+colorlog
+Werkzeug
