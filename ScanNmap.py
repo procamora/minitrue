@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import ipaddress
 import subprocess
-from dataclasses import dataclass, field
+from ipaddress import IPv4Interface, IPv6Interface
 from typing import List, Optional, Tuple, Union, Dict, Text
 
 import netifaces
@@ -13,24 +13,24 @@ import nmap
 from mac_vendor_lookup import MacLookup
 
 from host import Host
-from implement_sqlite import select_all_hosts, insert_host, update_host, update_host_offline
-from sqlite.logger import get_logger, logging
-
-logger: logging = get_logger(False, 'sqlite')
+from implement_sqlite import select_all_hosts, insert_host, update_host, update_host_offline, logger
 
 
-@dataclass
 class ScanNmap:
-    local_interfaces: Dict[Text, Text] = field(default_factory=dict)
-    subnets: List[Union[ipaddress.IPv4Interface, ipaddress.IPv6Interface]] = field(default_factory=list)
-    hosts_db: Dict[Text, Host] = field(default_factory=dict)
-    vendor = MacLookup()
-
-    def __post_init__(self):
+    def __init__(self, subnets: List[Union[IPv4Interface, IPv6Interface]] = None):
+        self.local_interfaces: Dict[Text, Text] = dict()
+        self.subnets: List[Union[IPv4Interface, IPv6Interface]] = list()
+        self.hosts_db: Dict[Text, Host] = dict()
+        self.vendor = MacLookup()
         self.vendor.load_vendors()
+
         self.set_local_interfaces()
-        self.set_ip_interfaces()
+        if subnets is None:  # Si añado las interfaces manualmente, no las busco
+            self.set_ip_interfaces()
+        else:
+            self.subnets = subnets
         self.hosts_db = select_all_hosts()
+        logger.info(self.subnets)
 
     def set_local_interfaces(self: ScanNmap):
         """
@@ -99,8 +99,8 @@ class ScanNmap:
             else:
                 vend = t["vendor"]
 
-            host: Host = Host(ip, mac, True, vend, scan["nmap"]["scanstats"]["timestr"])
-            print(host)
+            host: Host = Host(ip, mac, True, vend, scan["nmap"]["scanstats"]["timestr"], subnet.network)
+            logger.debug(f'detect: {host}')
             hosts.append(host)
 
         return hosts
@@ -109,22 +109,21 @@ class ScanNmap:
         host: Host
         for host in hosts:
             if host.ip in self.hosts_db.keys():
-                print(f'update {host}')
+                logger.debug(f'update {host}')
                 update_host(host)
             else:
                 insert_host(host)
-                logger.info(f'new host: {host}')
+                logger.warning(f'new host: {host}')
 
     def run(self: ScanNmap):
+        subnet: Union[IPv4Interface, IPv6Interface]
         for subnet in self.subnets:
             logger.info(f'Scanning: {subnet}')
             hosts: List[Host] = self.ping_scan(subnet)
             self.update_or_insert_host(hosts)
             # FIXME plantear otro diseño, su hay varias interfaces pondria el del resto como inactivos
-            update_host_offline(hosts[0].date)
-
-            #import sys
-            #sys.exit(0)
+            # subnet_partial = re.sub(r'(\d+)\.(\d+)\.(\d+)\.(\d+)', r'\1.\2.\3.', str(subnet.ip))
+            update_host_offline(hosts[0].date, hosts[0].network)
 
     @staticmethod
     def format_text(param_text: bytes) -> Optional[Text]:
@@ -142,7 +141,8 @@ class ScanNmap:
 
 
 def main():
-    a = ScanNmap()
+    l: list = [ipaddress.ip_interface('192.168.1.0/24')]
+    a = ScanNmap(l)
     a.run()
 
 

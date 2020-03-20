@@ -7,6 +7,9 @@ mac-vendor-lookup
 # nmap
 python-nmap
 
+# Libreria propia para gestion de sqlite
+procamora-sqlite3
+
 # Logging con color
 colorlog
 Werkzeug

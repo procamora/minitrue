@@ -8,11 +8,12 @@ from typing import Text
 
 
 @dataclass
-class Host():
+class Host:
     ip: Text
     mac: Text
     active: bool  # Es in integer en la BD 0 (false) and 1 (true).
     vendor: Text
     date: Text
+    network: Text
     description: Text = str()
     id: int = int()
