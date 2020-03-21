@@ -1,15 +1,20 @@
 # Obtener interfaces locales y sus MACs
 netifaces
 
-# Obtener el fabricante de una MAC
-mac-vendor-lookup
-
 # nmap
 python-nmap
+
+# Libreria propia obtener el fabricante de una MAC
+procamora-mac-vendor-lookup
 
 # Libreria propia para gestion de sqlite
 procamora-sqlite3
 
-# Logging con color
-colorlog
-Werkzeug
+# Libreria propia para realizar ping
+procamora-ping
+
+# Telegram Bot
+pyTelegramBotAPI
+
+# Generacion de PDF
+fpdf
