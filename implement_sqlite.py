@@ -55,7 +55,6 @@ def update_host_offline(date: Text, network: Text):
     :param network:
     :return:
     """
-    query: Text = f"UPDATE Hosts SET active=0 WHERE date <> '{date}' AND network LIKE '{network}%';"
+    query: Text = f"UPDATE Hosts SET active=0 WHERE date <> '{date}' AND network LIKE '{network}';"
     logger.debug(query)
-    print(query)
     conection_sqlite(DB, query)

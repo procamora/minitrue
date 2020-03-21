@@ -5,12 +5,14 @@ from __future__ import annotations
 
 import ipaddress
 import subprocess
+import sys
 from ipaddress import IPv4Interface, IPv6Interface
 from typing import List, Optional, Tuple, Union, Dict, Text
 
 import netifaces
 import nmap
 from mac_vendor_lookup import MacLookup
+from procamora_ping.ping import ping
 
 from host import Host
 from implement_sqlite import select_all_hosts, insert_host, update_host, update_host_offline, logger
@@ -25,7 +27,7 @@ class ScanNmap:
         self.vendor.load_vendors()
 
         self.set_local_interfaces()
-        if subnets is None:  # Si añado las interfaces manualmente, no las busco
+        if subnets is None or len(subnets) == 0:  # Si añado las interfaces manualmente, no las busco
             self.set_ip_interfaces()
         else:
             self.subnets = subnets
@@ -81,7 +83,7 @@ class ScanNmap:
         hosts: List[Host] = list()
         nm: nmap.nmap.PortScanner = nmap.PortScanner()
         scan: Dict = nm.scan(hosts=str(subnet), arguments='-n -sP', sudo=False)
-        print(nm.command_line())
+        logger.debug(nm.command_line())
 
         ip: Text
         for ip in nm.all_hosts():
@@ -105,25 +107,42 @@ class ScanNmap:
 
         return hosts
 
-    def update_or_insert_host(self: ScanNmap, hosts: List[Host]):
+    def update_or_insert_host(self: ScanNmap, hosts: List[Host]) -> List[Host]:
         host: Host
+        response_host: List[Host] = list()
         for host in hosts:
             if host.ip in self.hosts_db.keys():
                 logger.debug(f'update {host}')
+                # solo actuliza la hora del escaneo a cada host
                 update_host(host)
             else:
                 insert_host(host)
+                response_host.append(host)
                 logger.warning(f'new host: {host}')
+        return response_host
 
-    def run(self: ScanNmap):
+    def run(self: ScanNmap) -> List[Host]:
         subnet: Union[IPv4Interface, IPv6Interface]
+        response_host: List[Host] = list()
+
         for subnet in self.subnets:
             logger.info(f'Scanning: {subnet}')
-            hosts: List[Host] = self.ping_scan(subnet)
-            self.update_or_insert_host(hosts)
-            # FIXME plantear otro diseño, su hay varias interfaces pondria el del resto como inactivos
-            # subnet_partial = re.sub(r'(\d+)\.(\d+)\.(\d+)\.(\d+)', r'\1.\2.\3.', str(subnet.ip))
-            update_host_offline(hosts[0].date, hosts[0].network)
+
+            valid: bool = True
+            # Si ponemos IP valida (x.x.x.x/x) en vez de subred  ej: (x.x.x.0/x), comprobamos que la IP esta online
+            # sino lo esta se omite, para evitar fallos de escritura y que  pierda tiempo escaneando la red
+            if str(subnet) != str(subnet.network):
+                logger.info(f'Scanning: {ping(str(subnet))}')
+                valid = ping(str(subnet))
+
+            if valid:
+                hosts: List[Host] = self.ping_scan(subnet)
+                logger.debug(f'------> {hosts}')
+                response_host += self.update_or_insert_host(hosts)
+                update_host_offline(hosts[0].date, hosts[0].network)
+            else:
+                logger.warning(f'{subnet} is skiped')
+        return response_host
 
     @staticmethod
     def format_text(param_text: bytes) -> Optional[Text]:
@@ -140,14 +159,20 @@ class ScanNmap:
         return ScanNmap.format_text(stdout), ScanNmap.format_text(stderr), execute
 
 
-def main():
-    l: list = [ipaddress.ip_interface('192.168.1.0/24')]
-    a = ScanNmap(l)
-    a.run()
+def main(args: List[Text]):
+    list_networks: List[Union[IPv4Interface, IPv6Interface]] = list(map(lambda ip: ipaddress.ip_interface(ip), args))
+    # mismo metodo pero mas legible :)
+    # list_networks: List[Union[IPv4Interface, IPv6Interface]] = list()
+    # for ip in args:
+    #    list_networks.append(ipaddress.ip_interface(ip))
+
+    a = ScanNmap(list_networks)
+    print(a.run())
 
 
 if __name__ == '__main__':
-    main()
+    # El [0] es el nombre del fichero
+    main(sys.argv[1:])
 
 # https://github.com/maaaaz/nmaptocsv
 
