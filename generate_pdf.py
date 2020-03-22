@@ -3,13 +3,18 @@
 
 from __future__ import annotations
 
+import logging
 import subprocess
 import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Text, Tuple, Any
 
+from procamora_logging import get_logging
+
 from host import Host
+
+logger: logging = get_logging(False, 'pdf')
 
 
 def generate_latex(hosts: Dict[Text, Host]) -> Text:
@@ -36,21 +41,20 @@ def generate_latex(hosts: Dict[Text, Host]) -> Text:
 
 
 def latex_to_pdf(code_latex) -> Tuple[subprocess.CompletedProcess, Any]:
-    fp: tempfile._TemporaryFileWrapper = tempfile.NamedTemporaryFile(prefix='report_', suffix='.tex')
-    file_tex = Path(fp.name)
+    fp = tempfile.NamedTemporaryFile(prefix='report_', suffix='.tex')
+    file_tex: Path = Path(fp.name)
     file_tex.write_text(code_latex)
 
     dir_temp: tempfile.TemporaryDirectory = tempfile.TemporaryDirectory(prefix='latex_')
 
     command = f'pdflatex -output-directory={dir_temp.name} -interaction=nonstopmode {str(file_tex)}'
-    print(command)
+    logger.debug(command)
     execute: subprocess.CompletedProcess = subprocess.run(command.split(' '), stdout=subprocess.PIPE,
                                                           stderr=subprocess.PIPE)
     response = Path(dir_temp.name, file_tex.name.replace(".tex", ".pdf"))
     file_data = open(str(response), 'rb')
-    print(type(file_data))
 
-    print(execute.returncode)
+    logger.info(f'returncode: {execute.returncode}')
     fp.close()
     return execute, file_data
 
@@ -67,6 +71,3 @@ if __name__ == '__main__':
 
     a = generate_latex(aaaaaaa)
     latex_to_pdf(a)
-    # fp: tempfile._TemporaryFileWrapper = tempfile.NamedTemporaryFile(prefix='report_', suffix='.pdf')
-    # create_pdf_all_hosts('fp.name', aaaaaaa)
-    # fp.close()

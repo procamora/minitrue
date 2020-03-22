@@ -116,6 +116,16 @@ def send_exit(message) -> NoReturn:
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['scan'])
 def send_scan(message) -> NoReturn:
+    bot.reply_to(message, 'Starting the network scan')
+
+    list_networks: List[Union[IPv4Interface, IPv6Interface]] = list()
+    list_networks.append(IPv4Interface('192.168.1.0/24'))
+    sn: ScanNmap = ScanNmap(list_networks)
+    new_hosts: List[Host] = sn.run()
+    if len(new_hosts) > 0:
+        bot.reply_to(message, str(new_hosts), reply_markup=get_keyboard())
+    else:
+        bot.reply_to(message, 'No new host has been detected', reply_markup=get_keyboard())
     return
 
 
@@ -133,11 +143,14 @@ def send_offline(message) -> NoReturn:
 def send_pdf(message) -> NoReturn:
     all_hosts: Dict[Text, Host] = select_all_hosts()
 
-    a = generate_latex(all_hosts)
-    c, d = latex_to_pdf(a)
+    string_latex = generate_latex(all_hosts)
+    execute, file = latex_to_pdf(string_latex)
 
-    # IMPORTANTE para que el dicumento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
-    bot.send_document(message.chat.id, d, reply_markup=get_keyboard(), )
+    if execute.returncode == 0:
+        # IMPORTANTE para que el dicumento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
+        bot.send_document(message.chat.id, file, reply_markup=get_keyboard(), )
+    else:
+        bot.reply_to(message, str(execute.stderr), reply_markup=get_keyboard())
     return
 
 

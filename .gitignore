@@ -1,7 +1,8 @@
 # Propios
 .idea/
 database.db
-#settings.ini
+settings.ini
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -12,9 +12,9 @@ from typing import List, Optional, Tuple, Union, Dict, Text
 
 import netifaces
 import nmap
-from procamora_mac_vendor_lookup.mac_vendor_lookup_sync import MacLookup
-from procamora_logging.logger import get_logging
-from procamora_ping.ping import ping
+from procamora_logging import get_logging
+from procamora_mac_vendor_lookup import MacLookup
+from procamora_ping import ping
 
 from host import Host
 from implement_sqlite import select_all_hosts, insert_host, update_host, update_host_offline
@@ -84,6 +84,11 @@ class ScanNmap:
         return stdout.strip().split(' ')[4]
 
     def ping_scan(self: ScanNmap, subnet: Union[ipaddress.IPv4Interface, ipaddress.IPv6Interface]) -> List[Host]:
+        """
+        Metodo encargado de realizar el escaneo de una subred, retorna todos los hosts que encuentra
+        :param subnet:
+        :return:
+        """
         hosts: List[Host] = list()
         nm: nmap.nmap.PortScanner = nmap.PortScanner()
         scan: Dict = nm.scan(hosts=str(subnet), arguments='-n -sP', sudo=False)
@@ -112,6 +117,12 @@ class ScanNmap:
         return hosts
 
     def update_or_insert_host(self: ScanNmap, hosts: List[Host]) -> List[Host]:
+        """
+        Metodo que se encarga de meter en la base de datos los host que se han encontrado en la red. Si ya esta en la
+        bd actualiza la informacion y si no esta lo inserta. Retorna la lista de host que ha insertado en la bd
+        :param hosts:
+        :return:
+        """
         host: Host
         response_host: List[Host] = list()
         for host in hosts:
@@ -126,6 +137,11 @@ class ScanNmap:
         return response_host
 
     def run(self: ScanNmap) -> List[Host]:
+        """
+        Metodo encargado de recorrer todas las interfaces y realizar un escaneo en cada una de ellas. Retorna los nuevos
+        hosts que se han encontrado
+        :return:
+        """
         subnet: Union[IPv4Interface, IPv6Interface]
         response_host: List[Host] = list()
 
@@ -150,6 +166,11 @@ class ScanNmap:
 
     @staticmethod
     def format_text(param_text: bytes) -> Optional[Text]:
+        """
+        Metodo para formatear codigo, es usado para formatear las salidas de las llamadas al sistema
+        :param param_text:
+        :return:
+        """
         if param_text is not None:
             text = param_text.decode('utf-8')
             return str(text)
@@ -157,6 +178,11 @@ class ScanNmap:
 
     @staticmethod
     def execute_command(command: Text) -> Tuple[Text, Text, subprocess.Popen]:
+        """
+        Metodo que realiza una llamada al sistema para ejecutar un comando
+        :param command:
+        :return:
+        """
         # FIXME CAMBIAR Popen por run
         execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = execute.communicate()

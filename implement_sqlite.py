@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 
 
+import logging
 from pathlib import Path  # nueva forma de trabajar con rutas
 from typing import Dict, Any, List, Text, NoReturn
 
-from procamora_sqlite3.interface_sqlite import *
-from procamora_sqlite3.logger import get_logger, logging
+from procamora_logging import get_logging
+from procamora_sqlite3 import conection_sqlite
 
 from host import Host
 
-logger: logging = get_logger(False, 'sqlite')
+logger: logging = get_logging(False, 'sqlite')
 DB: Path = Path("database.db")
 
 
