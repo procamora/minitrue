@@ -3,78 +3,70 @@
 
 from __future__ import annotations
 
-import os
+import subprocess
 import tempfile
-from typing import Text, NoReturn, List
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, Text, Tuple, Any
 
-from fpdf import FPDF
-
-
-# http://www.blog.pythonlibrary.org/2018/06/05/creating-pdfs-with-pyfpdf-and-python/
-
-
-class CustomPDF(FPDF):
-
-    def header(self: CustomPDF) -> NoReturn:
-        # Set up a logo
-        self.image('icons/profile.png', 10, 8, 33)
-        self.set_font('Arial', 'B', 14)
-
-        # Add an address
-        self.cell(100)
-        self.cell(0, 5, 'procamora', ln=1)
-        self.cell(100)
-        self.cell(0, 5, 'pablojoserocamora@gmail.com', ln=1)
-        self.cell(100)
-        self.cell(0, 5, 'bot_scan_networks', ln=1)
-
-        # Line break
-        self.ln(20)
-
-    def footer(self: CustomPDF) -> NoReturn:
-        self.set_y(-10)
-
-        self.set_font('Arial', 'I', 8)
-
-        # Add a page number
-        page = 'Page ' + str(self.page_no()) + '/{nb}'
-        self.cell(0, 10, page, 0, 0, 'C')
+from host import Host
 
 
-def create_pdf(pdf_path: Text, spacing: int = 1):
-    header_table: List = ['IP', 'MAC', 'ACTIVE', 'VENDOR', 'DESCRIPTION', 'NETWORK']
-    data = [
-        ['Mike', 'Driscoll', 'mike@somewhere.com', '55555'],
-        ['John', 'Doe', 'jdoe@doe.com', '12345'],
-        ['Nina', 'Ma', 'inane@where.com', '54321']
-    ]
-    table = list()
-    table.append(header_table)
-    table.append(data[0])
-    print(table)
+def generate_latex(hosts: Dict[Text, Host]) -> Text:
+    import jinja2
+    import os
+    latex_jinja_env = jinja2.Environment(
+        block_start_string='\BLOCK{',
+        block_end_string='}',
+        variable_start_string='\VAR{',
+        variable_end_string='}',
+        comment_start_string='\#{',
+        comment_end_string='}',
+        line_statement_prefix='%%',
+        line_comment_prefix='%#',
+        trim_blocks=True,
+        autoescape=False,
+        loader=jinja2.FileSystemLoader(os.path.abspath('.'))
+    )
 
-    pdf: CustomPDF = CustomPDF(orientation='P', unit='mm', format='A4')
-    # Create the special value {nb}
-    pdf.alias_nb_pages()  # numero de paginas
-    pdf.add_page()
-    pdf.set_font('Times', '', 12)
+    now = datetime.now()  # current date and time
+    template = latex_jinja_env.get_template('template.tex')
+    latex_generate = template.render(date=now.strftime("%m/%d/%Y"), title='report', author='asdasd', hosts=hosts)
+    return latex_generate
 
-    col_width: int = pdf.w / 6.5
-    row_height: int = pdf.font_size
-    for row in table:
-        for item in row:
-            pdf.cell(col_width, row_height * spacing,
-                     txt=item, border=1)
-        pdf.ln(row_height * spacing)
 
-    pdf.output(pdf_path)
+def latex_to_pdf(code_latex) -> Tuple[subprocess.CompletedProcess, Any]:
+    fp: tempfile._TemporaryFileWrapper = tempfile.NamedTemporaryFile(prefix='report_', suffix='.tex')
+    file_tex = Path(fp.name)
+    file_tex.write_text(code_latex)
+
+    dir_temp: tempfile.TemporaryDirectory = tempfile.TemporaryDirectory(prefix='latex_')
+
+    command = f'pdflatex -output-directory={dir_temp.name} -interaction=nonstopmode {str(file_tex)}'
+    print(command)
+    execute: subprocess.CompletedProcess = subprocess.run(command.split(' '), stdout=subprocess.PIPE,
+                                                          stderr=subprocess.PIPE)
+    response = Path(dir_temp.name, file_tex.name.replace(".tex", ".pdf"))
+    file_data = open(str(response), 'rb')
+    print(type(file_data))
+
+    print(execute.returncode)
+    fp.close()
+    return execute, file_data
 
 
 if __name__ == '__main__':
-    fp: tempfile._TemporaryFileWrapper = tempfile.NamedTemporaryFile()
-    print(fp.name)
-    os.system(f'ls -la {fp.name}')
-    create_pdf(fp.name)
-    os.system(f'ls -la {fp.name}')
-    fp.close()
-    os.system(f'ls -la {fp.name}')
+    aaaaaaa = {
+        '192.168.1.1': Host(ip='192.168.1.1', mac='d0:6e:de:51:6d:e3', active=True, vendor='Sagemcom Broadband SAS',
+                            date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='', id=1),
+        '192.168.1.131': Host(ip='192.168.1.131', mac='b4:9d:0b:72:be:93', active=True, vendor='BQ',
+                              date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='', id=12),
+        '192.168.1.42': Host(ip='192.168.1.42', mac='80:32:53:81:5d:08', active=False, vendor='Intel Corporate',
+                             date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='', id=13)
+    }
+
+    a = generate_latex(aaaaaaa)
+    latex_to_pdf(a)
+    # fp: tempfile._TemporaryFileWrapper = tempfile.NamedTemporaryFile(prefix='report_', suffix='.pdf')
+    # create_pdf_all_hosts('fp.name', aaaaaaa)
+    # fp.close()

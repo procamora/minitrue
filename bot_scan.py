@@ -33,12 +33,15 @@ import threading
 import time
 from ipaddress import IPv4Interface, IPv6Interface
 from pathlib import Path
-from typing import NoReturn, Tuple, List, Union
+from typing import NoReturn, Tuple, List, Union, Text, Dict
 
 from requests import exceptions
-from telebot import TeleBot, types, apihelper  # Importamos la librería Y los tipos especiales de esta
+# Importamos la librería Y los tipos especiales de esta
+from telebot import TeleBot, types, apihelper
 
+from generate_pdf import latex_to_pdf, generate_latex
 from host import Host
+from implement_sqlite import select_all_hosts
 from scan_nmap import ScanNmap, logger
 
 
@@ -48,6 +51,14 @@ ADMIN = 111111
 BOT_TOKEN = 1069111113:AAHOk9K5TAAAAAAAAAAIY1OgA_LNpAAAAA
 '''
 
+
+my_commands: Tuple = (
+    '/scan',  # 0
+    '/online',  # 1
+    '/offline',  # 2
+    '/pdf',  # 3
+    '/exit',  # 4
+)
 
 FILE_CONFIG: Path = Path('settings.ini')
 if not FILE_CONFIG.exists():
@@ -60,26 +71,12 @@ config: configparser.ConfigParser = configparser.ConfigParser()
 config.read(FILE_CONFIG)
 
 config_basic: configparser.SectionProxy = config["BASICS"]
-administrador: int = config_basic.get('ADMIN')
 
 bot: TeleBot = TeleBot(config_basic.get('BOT_TOKEN'))
-try:
-    bot.send_message(administrador, "Starting bot")
-    logger.info('Starting bot')
-except (apihelper.ApiException, exceptions.ReadTimeout) as e:
-    logger.critical(f'Error in init bot: {e}')
-    sys.exit(1)
-
-my_commands: Tuple = (
-    '/scan',
-    '/online',
-    '/offline',
-    '/pdf',
-    '/exit',)
 
 
 def get_keyboard() -> types.ReplyKeyboardMarkup:
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    markup: types.ReplyKeyboardMarkup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.row(my_commands[0])
     markup.row(my_commands[1], my_commands[2], my_commands[3])
     # markup.row(my_commands[4])
@@ -98,7 +95,7 @@ def command_start(message) -> NoReturn:
 def command_help(message) -> NoReturn:
     bot.send_message(message.chat.id, "Aqui pondre todas las opciones")
     markup = types.InlineKeyboardMarkup()
-    itembtna = types.InlineKeyboardButton('Github', url="https://github.com/procamora/bot_proxmox")
+    itembtna = types.InlineKeyboardButton('Github', url="https://github.com/procamora/bot_scan_networks")
     markup.row(itembtna)
     bot.send_message(message.chat.id, "Aqui pondre todas las opciones", reply_markup=markup)
     return  # solo esta puesto para que no falle la inspeccion de codigo
@@ -112,38 +109,43 @@ def command_system(message) -> NoReturn:
     return  # solo esta puesto para que no falle la inspeccion de codigo
 
 
-@bot.message_handler(func=lambda message: message.chat.id == administrador, commands=['exit'])
+@bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['exit'])
 def send_exit(message) -> NoReturn:
     pass
 
 
-@bot.message_handler(func=lambda message: message.chat.id == administrador, commands=['scan'])
+@bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['scan'])
 def send_scan(message) -> NoReturn:
     return
 
 
-@bot.message_handler(func=lambda message: message.chat.id == administrador, commands=['online'])
+@bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['online'])
 def send_online(message) -> NoReturn:
     return
 
 
-@bot.message_handler(func=lambda message: message.chat.id == administrador, commands=['offline'])
+@bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['offline'])
 def send_offline(message) -> NoReturn:
     return
 
 
-@bot.message_handler(func=lambda message: message.chat.id == administrador, commands=['pdf'])
+@bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['pdf'])
 def send_pdf(message) -> NoReturn:
-    # Tabla hosts activos
-    # Tabla host inactivos
+    all_hosts: Dict[Text, Host] = select_all_hosts()
+
+    a = generate_latex(all_hosts)
+    c, d = latex_to_pdf(a)
+
+    # IMPORTANTE para que el dicumento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
+    bot.send_document(message.chat.id, d, reply_markup=get_keyboard(), )
     return
 
 
 @bot.message_handler(regexp=".*")
 def handle_resto(message) -> NoReturn:
-    texto = 'No tienes permiso para ejecutar esta accion, eso se debe a que no eres yo.\n' \
-            'Por lo que ya sabes, desaparece -.-'
-    bot.reply_to(message, texto)
+    texto: Text = 'No tienes permiso para ejecutar esta accion, eso se debe a que no eres yo.\n' \
+                  'Por lo que ya sabes, desaparece -.-'
+    bot.reply_to(message, texto, reply_markup=get_keyboard())
     return  # solo esta puesto para que no falle la inspeccion de codigo
 
 
@@ -158,7 +160,7 @@ def daemon_scan_network() -> NoReturn:
     while True:
         new_hosts: List[Host] = sn.run()
         if len(new_hosts) > 0:
-            bot.send_message(administrador, str(new_hosts))
+            bot.send_message(owner_bot, str(new_hosts))
 
         # https://stackoverflow.com/questions/17075788/python-is-time-sleepn-cpu-intensive
         time.sleep(300)
@@ -168,6 +170,13 @@ d = threading.Thread(target=daemon_scan_network, name='scan_network')
 d.setDaemon(True)
 d.start()
 
-# Con esto, le decimos al bot que siga funcionando incluso si encuentra
-# algun fallo.
-bot.polling(none_stop=False)
+owner_bot: int = int(config_basic.get('ADMIN'))
+try:
+    bot.send_message(owner_bot, "Starting bot", reply_markup=get_keyboard(), disable_notification=True)
+    logger.info('Starting bot')
+except (apihelper.ApiException, exceptions.ReadTimeout) as e:
+    logger.critical(f'Error in init bot: {e}')
+    sys.exit(1)
+
+# Con esto, le decimos al bot que siga funcionando incluso si encuentra algun fallo.
+bot.infinity_polling(none_stop=True)
