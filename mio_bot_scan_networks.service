@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=/usr/local/bin/python3.7 /home/pi/bot_scan_networks/bot_scan.py >> /home/pi/bot_scan/tg_bot.log 2>&1
+ExecStart=/usr/bin/python3 /home/pi/bot_scan_networks/bot_scan.py >> /home/pi/bot_scan/tg_bot.log 2>&1
 User=pi
 
 [Install]

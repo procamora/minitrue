@@ -22,3 +22,6 @@ fpdf
 
 # Tabla ascii para enviar por tg
 terminaltables
+
+# Customizar template latex
+jinja2

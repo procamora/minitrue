@@ -1,0 +1,62 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+%\usepackage[margin=2, top=2cm, includefoot]{geometry}
+\usepackage{graphicx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+
+% Definicion de colores
+\definecolor{greenPortada}{HTML}{69A84F}
+
+% Declaracion de variables
+\newcommand{\logoPortada}{../icons/profile.png}
+\newcommand{\nombrePortada}{Mantis}
+\newcommand{\logoB}{../icons/profile.png}
+\newcommand{\datetime}{24 de Marzo del 2020}
+
+% Adicionales
+%\addto\captionspanish{\renewcommand{\contentsname{Index}}}
+\setlength{\headheight}{40.2pt}
+\fancyhf{}
+\lhead{\includegraphics[width=5cm]{\logoPortada}}\rhead{\includegraphics[height=1.5cm]{\logoB}}
+\renewcommand{\headrulewidth}{3pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{\greenPortada}\leaders\hrule\ heheight \headrulewidth\hfill}}
+
+% Comienzo del documento
+\begin{document}
+
+	% Portada
+	\begin{titlepage}
+		\centering
+		\includegraphics[width=0.6\textwidth]{\logoPortada}\par\vspace{1cm}%
+		{\scshape\LARGE \textbf{Informa técnico}\par}
+		\vspace{0.2cm}
+		{\Huge\bfseries\textcolor{greenPortada}{Máquina \nombrePortada}\par}
+		\vfill\vfill
+		\includegraphics[width=\textwidth,height=5cm,keepaspectratio]{\logoB}\par\vspace{1cm}
+		\vfill
+		\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
+			\centering
+			Este documento es confidencial y contiene información sensible.
+			\\
+			No debería ser impreso o compartido con terceras entidades.
+		\end{tcolorbox}
+		\vfill
+		{\large \datetime\par}
+		\vfill
+	\end{titlepage}
+
+
+
+
+
+
+
+\end{document}
+
+
+
+

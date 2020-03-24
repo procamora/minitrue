@@ -155,8 +155,8 @@ class ScanNmap:
             # Si ponemos IP valida (x.x.x.x/x) en vez de subred  ej: (x.x.x.0/x), comprobamos que la IP esta online
             # sino lo esta se omite, para evitar fallos de escritura y que  pierda tiempo escaneando la red
             if str(subnet) != str(subnet.network):
-                logger.info(f'Scanning: {ping(str(subnet))}')
-                valid = ping(str(subnet))
+                logger.info(f'Scanning: {ping(str(subnet.ip))}')
+                valid = ping(str(subnet.ip))
 
             if valid:
                 hosts: List[Host] = self.ping_scan(subnet)

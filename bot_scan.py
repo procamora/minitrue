@@ -61,7 +61,7 @@ my_commands: Tuple = (
     '/exit',  # 4
 )
 
-FILE_CONFIG: Path = Path('settings.ini')
+FILE_CONFIG: Path = Path(Path(__file__).resolve().parent, "settings.ini")
 if not FILE_CONFIG.exists():
     logger.critical(f'File {FILE_CONFIG} not exists and is necesary')
     FILE_CONFIG.write_text(get_basic_file_config())
@@ -163,7 +163,7 @@ def send_pdf(message) -> NoReturn:
         # IMPORTANTE para que el dicumento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
         bot.send_document(message.chat.id, file, reply_markup=get_keyboard(), )
     else:
-        bot.reply_to(message, str(execute.stderr), reply_markup=get_keyboard())
+        bot.reply_to(message, str(execute.stdout.decode('utf-8')), reply_markup=get_keyboard())
     return
 
 
