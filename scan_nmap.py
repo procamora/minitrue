@@ -19,7 +19,7 @@ from procamora_ping import ping
 from host import Host
 from implement_sqlite import select_all_hosts, insert_host, update_host, update_host_offline
 
-logger: logging = get_logging(False, 'scan_nmap')
+logger: logging = get_logging(True, 'scan_nmap')
 
 
 class ScanNmap:
@@ -35,8 +35,11 @@ class ScanNmap:
             self.set_ip_interfaces()
         else:
             self.subnets = subnets
-        self.hosts_db = select_all_hosts()
+        self.update_db()
         logger.info(self.subnets)
+
+    def update_db(self: ScanNmap):
+        self.hosts_db = select_all_hosts()
 
     def set_local_interfaces(self: ScanNmap):
         """
@@ -127,13 +130,13 @@ class ScanNmap:
         response_host: List[Host] = list()
         for host in hosts:
             if host.ip in self.hosts_db.keys():
-                logger.debug(f'update {host}')
+                # logger.debug(f'update {host}')
                 # solo actuliza la hora del escaneo a cada host
                 update_host(host)
             else:
+                logger.warning(f'new host: {host}')
                 insert_host(host)
                 response_host.append(host)
-                logger.warning(f'new host: {host}')
         return response_host
 
     def run(self: ScanNmap) -> List[Host]:

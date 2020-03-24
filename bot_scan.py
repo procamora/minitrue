@@ -12,10 +12,10 @@ procamora_scan_bot
 Description:
 This is a bot to manage network scanner using nmap. A local agent is required to perform the scans
 
-About: 🚫
+About: 
 This bot has been developed by @procamora
 
-Botpic: 🖼
+Botpic:
 <imagen del bot>
 
 Commands:
@@ -38,10 +38,11 @@ from typing import NoReturn, Tuple, List, Union, Text, Dict
 from requests import exceptions
 # Importamos la librería Y los tipos especiales de esta
 from telebot import TeleBot, types, apihelper
+from terminaltables import AsciiTable
 
 from generate_pdf import latex_to_pdf, generate_latex
 from host import Host
-from implement_sqlite import select_all_hosts
+from implement_sqlite import select_all_hosts, select_hosts_online, select_hosts_offline
 from scan_nmap import ScanNmap, logger
 
 
@@ -131,11 +132,23 @@ def send_scan(message) -> NoReturn:
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['online'])
 def send_online(message) -> NoReturn:
+    response: List[List[Text]] = select_hosts_online()
+    update = list([['IP', 'vendor']])
+    for i in response:
+        update.append(i)
+    table: AsciiTable = AsciiTable(update)
+    bot.reply_to(message, str(table.table), reply_markup=get_keyboard())
     return
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['offline'])
 def send_offline(message) -> NoReturn:
+    response: List[List[Text]] = select_hosts_offline()
+    update = list([['IP', 'vendor']])
+    for i in response:
+        update.append(i)
+    table: AsciiTable = AsciiTable(update)
+    bot.reply_to(message, str(table.table), reply_markup=get_keyboard())
     return
 
 
@@ -162,6 +175,16 @@ def handle_resto(message) -> NoReturn:
     return  # solo esta puesto para que no falle la inspeccion de codigo
 
 
+def daemon_aux(host: Host):
+    """
+    Funcion auxiliar usada por map para convertir la clase Host a un string y enviarlo por telegram cuando se detecta
+    un nuevo host
+    :param host:
+    :return:
+    """
+    return f'Host(ip="{host.ip}", mac="{host.mac}", vendor="{host.vendor}", description="{host.description}")'
+
+
 def daemon_scan_network() -> NoReturn:
     """
     Demonio que va comprobando si tiene que ejecutarse un recordatorio
@@ -171,12 +194,19 @@ def daemon_scan_network() -> NoReturn:
     list_networks.append(IPv4Interface('192.168.1.0/24'))
     sn: ScanNmap = ScanNmap(list_networks)
     while True:
-        new_hosts: List[Host] = sn.run()
-        if len(new_hosts) > 0:
-            bot.send_message(owner_bot, str(new_hosts))
+        # Al capturar el error en el nbucle infinito, si falla una vez por x motivo no afectaria,
+        # ya que seguiria ejecutandose en siguientes iteraciones
+        try:
+            sn.update_db()  # Actualizamos dict de host, por si se han detectado nuevos
+            new_hosts: List[Host] = sn.run()
+            if len(new_hosts) > 0:
+                response = '\n\n'.join(map(daemon_aux, new_hosts))
+                bot.send_message(owner_bot, f'new hosts: \n\n{response}')
+        except Exception as e:
+            logger.error(f'Fail thread: {e}')
 
         # https://stackoverflow.com/questions/17075788/python-is-time-sleepn-cpu-intensive
-        time.sleep(300)
+        time.sleep(30)
 
 
 d = threading.Thread(target=daemon_scan_network, name='scan_network')

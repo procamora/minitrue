@@ -18,3 +18,7 @@ pyTelegramBotAPI
 
 # Generacion de PDF
 fpdf
+
+
+# Tabla ascii para enviar por tg
+terminaltables

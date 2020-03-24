@@ -3,6 +3,7 @@
 
 
 import logging
+import sqlite3
 from pathlib import Path  # nueva forma de trabajar con rutas
 from typing import Dict, Any, List, Text, NoReturn
 
@@ -11,8 +12,10 @@ from procamora_sqlite3 import conection_sqlite
 
 from host import Host
 
-logger: logging = get_logging(False, 'sqlite')
-DB: Path = Path("database.db")
+logger: logging = get_logging(True, 'sqlite')
+
+# Ruta absoluta de la BD
+DB: Path = Path(Path(__file__).resolve().parent, "database.db")
 
 
 def select_all_hosts() -> Dict[Text, Host]:
@@ -26,19 +29,36 @@ def select_all_hosts() -> Dict[Text, Host]:
     return response
 
 
+def select_hosts_online() -> List[List[Text]]:
+    query: Text = "SELECT ip, vendor FROM Hosts WHERE active LIKE 1"
+    response_query: List[List[Text]] = conection_sqlite(DB, query, is_dict=False)
+    return response_query
+
+
+def select_hosts_offline() -> List[List[Text]]:
+    query: Text = "SELECT ip, vendor FROM Hosts WHERE active LIKE 0"
+    response_query: List[List[Text]] = conection_sqlite(DB, query, is_dict=False)
+    return response_query
+
+
 def insert_host(host: Host) -> NoReturn:
     # active es in integer en la BD 0 (false) and 1 (true). Si se inserta es porque esta activo
     # >> > int(True == True)
     # 1
     # >> > int(False == True)
     # 0
-
     active: int = int(host.active == True)
-
+    # INSERT OR REPLACE INTO
     query: Text = f"INSERT INTO Hosts(ip, mac, active, vendor, description, date, network) VALUES ('{host.ip}'," \
                   f"'{host.mac}', {active}, '{host.vendor}','{host.description}','{host.date}','{host.network}');"
     logger.debug(query)
-    conection_sqlite(DB, query)
+    # TODO chapuza temporal, si falla al insertar es que ya existe y hay que actualizar. Compronar si existe antes
+    # de intentar insertar de primeras
+    try:
+        conection_sqlite(DB, query)
+    except sqlite3.IntegrityError as e:
+        logger.critical(e)
+        update_host(host)
 
 
 def update_host(host: Host) -> NoReturn:
