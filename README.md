@@ -29,6 +29,14 @@ sudo dnf install nmap texlive-latex-recommended texlive-latex-extra
 ```
 
 
+# Basic Usage
+
+
+
+```python
+python3 bot_scan.py
+```
+
 
 # Functionality
 
@@ -54,6 +62,7 @@ sudo dnf install nmap texlive-latex-recommended texlive-latex-extra
 - [ ] PyTaskIO puede ser interesante para cola de tareas de los procesos en ejecucion
 - [ ] Usar un contenedor docker para la compilacion de latex
 - [ ] Investigar si añadir funcionalidad con docker (openvas)
-
+- [ ] Escaneos automaticas AP con visibilidad??
+- [ ] Escaneo dispositivos bluetooh visibles
 
 

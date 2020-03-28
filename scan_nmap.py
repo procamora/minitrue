@@ -12,8 +12,8 @@ from typing import List, Optional, Tuple, Union, Dict, Text
 
 import netifaces
 import nmap
-from procamora_logging import get_logging
 from procamora_mac_vendor_lookup import MacLookup
+from procamora_logging import get_logging
 from procamora_ping import ping
 
 from host import Host

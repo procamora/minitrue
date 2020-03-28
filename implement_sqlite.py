@@ -8,7 +8,7 @@ from pathlib import Path  # nueva forma de trabajar con rutas
 from typing import Dict, Any, List, Text, NoReturn
 
 from procamora_logging import get_logging
-from procamora_sqlite3 import conection_sqlite
+from procamora_sqlite3 import conection_sqlite, execute_script_sqlite
 
 from host import Host
 
@@ -16,6 +16,7 @@ logger: logging = get_logging(True, 'sqlite')
 
 # Ruta absoluta de la BD
 DB: Path = Path(Path(__file__).resolve().parent, "database.db")
+DB_STRUCTURE: Path = Path(Path(__file__).resolve().parent, "database.db.sql")
 
 
 def select_all_hosts() -> Dict[Text, Host]:
@@ -79,3 +80,16 @@ def update_host_offline(date: Text, network: Text):
     query: Text = f"UPDATE Hosts SET active=0 WHERE date <> '{date}' AND network LIKE '{network}';"
     logger.debug(query)
     conection_sqlite(DB, query)
+
+
+def check_database():
+    """
+    Comprueba si existe la base de datos, sino existe la crea
+    :return:
+    """
+    try:
+        query: Text = "SELECT * FROM Hosts"
+        conection_sqlite(DB, query)
+    except OSError:
+        logger.info(f'the database {DB} doesn\'t exist, creating it with the default configuration')
+        execute_script_sqlite(DB, DB_STRUCTURE.read_text())

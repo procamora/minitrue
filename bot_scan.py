@@ -42,7 +42,7 @@ from terminaltables import AsciiTable
 
 from generate_pdf import latex_to_pdf, generate_latex
 from host import Host
-from implement_sqlite import select_all_hosts, select_hosts_online, select_hosts_offline
+from implement_sqlite import select_all_hosts, select_hosts_online, select_hosts_offline, check_database
 from scan_nmap import ScanNmap, logger
 
 
@@ -190,6 +190,7 @@ def daemon_scan_network() -> NoReturn:
     Demonio que va comprobando si tiene que ejecutarse un recordatorio
     :return:
     """
+    check_database()
     list_networks: List[Union[IPv4Interface, IPv6Interface]] = list()
     list_networks.append(IPv4Interface('192.168.1.0/24'))
     sn: ScanNmap = ScanNmap(list_networks)
