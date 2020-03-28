@@ -8,7 +8,7 @@ import subprocess
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Text, Tuple, Any
+from typing import Dict, Text, Tuple, Any, Optional
 
 from procamora_logging import get_logging
 
@@ -19,7 +19,6 @@ logger: logging = get_logging(False, 'pdf')
 
 def generate_latex(hosts: Dict[Text, Host]) -> Text:
     import jinja2
-    import os
     latex_jinja_env = jinja2.Environment(
         block_start_string='\BLOCK{',
         block_end_string='}',
@@ -31,7 +30,7 @@ def generate_latex(hosts: Dict[Text, Host]) -> Text:
         line_comment_prefix='%#',
         trim_blocks=True,
         autoescape=False,
-        loader=jinja2.FileSystemLoader(os.path.abspath('.'))
+        loader=jinja2.FileSystemLoader(str(Path(__file__).resolve().parent))
     )
 
     now = datetime.now()  # current date and time
@@ -40,7 +39,7 @@ def generate_latex(hosts: Dict[Text, Host]) -> Text:
     return latex_generate
 
 
-def latex_to_pdf(code_latex) -> Tuple[subprocess.CompletedProcess, Any]:
+def latex_to_pdf(code_latex) -> Optional[Tuple[subprocess.CompletedProcess, Any]]:
     fp = tempfile.NamedTemporaryFile(prefix='report_', suffix='.tex')
     file_tex: Path = Path(fp.name)
     file_tex.write_text(code_latex)
@@ -51,10 +50,15 @@ def latex_to_pdf(code_latex) -> Tuple[subprocess.CompletedProcess, Any]:
     logger.debug(command)
     execute: subprocess.CompletedProcess = subprocess.run(command.split(' '), stdout=subprocess.PIPE,
                                                           stderr=subprocess.PIPE)
+    if execute.returncode == 1:
+        logger.error(execute.stdout.decode('utf-8'))
+        return execute, None
+
+    logger.info(f'returncode: {execute.returncode}')
+
     response = Path(dir_temp.name, file_tex.name.replace(".tex", ".pdf"))
     file_data = open(str(response), 'rb')
 
-    logger.info(f'returncode: {execute.returncode}')
     fp.close()
     return execute, file_data
 
