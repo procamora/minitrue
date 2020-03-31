@@ -51,7 +51,7 @@ python3 bot_scan.py
 
 # Pending
 
-
+- [ ] Generar pdf se tiene que lanzar en un hilo con la instancia de bot, para que genere el pdf tranquilamente sin bloquear el bot
 - [ ] Implementar para IPv6
 - [ ] EN el \_\_init\_\_ si la BD no existe crearla con la estrucutra basica
 
@@ -64,5 +64,5 @@ python3 bot_scan.py
 - [ ] Investigar si añadir funcionalidad con docker (openvas)
 - [ ] Escaneos automaticas AP con visibilidad??
 - [ ] Escaneo dispositivos bluetooh visibles
-
+- [ ] Repaso bot proxmox usando bot scan network
 

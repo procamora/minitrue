@@ -159,7 +159,7 @@ def send_pdf(message) -> NoReturn:
 
     cmd_interfaces: Text = 'ip address show'
     stdout_interfaces, stderr, ex = execute_command(cmd_interfaces)
-    cmd_arp: Text = 'ip neigh show'
+    cmd_arp: Text = 'ip neigh show | grep "lladdr"'
     stdout_arp, stderr, ex = execute_command(cmd_arp)
     cmd_routes: Text = 'ip route list'
     stdout_routes, stderr, ex = execute_command(cmd_routes)
