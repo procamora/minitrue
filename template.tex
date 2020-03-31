@@ -10,6 +10,8 @@
 \usepackage{fancyhdr}
 \usepackage{vmargin}
 \usepackage{hyperref}
+\usepackage{listings} % Insercion de codigo
+
 \setmarginsrb{1 cm}{1 cm}{2 cm}{2 cm}{1 cm}{1.5 cm}{1 cm}{1.5 cm}
 
 \title{\VAR{title}}
@@ -69,7 +71,7 @@
 			\end{flushright}
 		\end{minipage}\\[2 cm]
 
-		\includegraphics[width=5cm]{icons/profile.png}
+		\includegraphics[width=5cm]{\VAR{icon}}
 	\end{titlepage}
 
 
@@ -129,6 +131,21 @@
 		\caption{Hosts offline}
 		\label{tab:my-table2}
 	\end{table}
+
+
+	\begin{lstlisting}[caption=Script personalizado para la enumeracion de puertos]
+		\VAR{interfaces}
+	\end{lstlisting}
+
+
+	\begin{lstlisting}[caption=Script personalizado para la enumeracion de puertos]
+		\VAR{arp}
+	\end{lstlisting}
+
+
+	\begin{lstlisting}[caption=Script personalizado para la enumeracion de puertos]
+		\VAR{routes}
+	\end{lstlisting}
 
 
 \end{document}

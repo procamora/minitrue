@@ -17,8 +17,8 @@
 %\usepackage{mwe}
 
 % Declaración de variables
-\newcommand{\myLogoCover}{\VAR{icon1}}
-\newcommand{\myLogoProyect}{\VAR{icon2}}
+\newcommand{\myLogoCover}{personal.png}
+\newcommand{\myLogoProyect}{logo_transparent.png}
 \newcommand{\myTitle}{Automatic Report}
 \newcommand{\mySubtitle}{\href{https://telegram.me/procamora_scan_bot}{@procamora\_scan\_bot}}
 \newcommand{\myName}{Pablo Rocamora}
@@ -152,7 +152,7 @@
 
 
 \clearpage
-%\tableofcontents	     % Índice
+\tableofcontents	     % Índice
 %\listoffigures		     % Índice de figuras
 %\listoftables		     % Índice de tablas
 %\lstlistoflistings     % Índice de códigos
@@ -177,7 +177,7 @@
 
 		%% for x in hosts
 		%% if hosts[x].active
-		\VAR{hosts[x].ip} & \VAR{hosts[x].mac} & \VAR{hosts[x].vendor} & \VAR{hosts[x].description} & \VAR{hosts[x].network} \\ \hline
+%		\VAR{hosts[x].ip} & \VAR{hosts[x].mac} & \VAR{hosts[x].vendor} & \VAR{hosts[x].description} & \VAR{hosts[x].network} \\ \hline
 		%% endif
 		%% endfor
 
@@ -198,7 +198,7 @@
 
 		%% for x in hosts
 		%% if not hosts[x].active
-		\VAR{hosts[x].ip} & \VAR{hosts[x].mac} & \VAR{hosts[x].vendor} & \VAR{hosts[x].description} & \VAR{hosts[x].network} \\ \hline
+%		\VAR{hosts[x].ip} & \VAR{hosts[x].mac} & \VAR{hosts[x].vendor} & \VAR{hosts[x].description} & \VAR{hosts[x].network} \\ \hline
 		%% endif
 		%% endfor
 
@@ -225,7 +225,7 @@
 
 
 \begin{center}
-\smartdiagram[sequence diagram]{ip address show, ip neigh show, ip route list}
+\smartdiagram[sequence diagram]{ip address show,ip neigh show,ip route list}
 \end{center}
 
 
@@ -233,14 +233,14 @@
 \subsection{Interfaces}
 
 
-\begin{lstlisting}[language=Bash, caption=ip address show]
+\begin{lstlisting}[language=Bash, caption=Network Interfaces]
 \VAR{interfaces}
 \end{lstlisting}
 
 \subsection{ARP}
 
 
-\begin{lstlisting}[language=Bash, caption=ip neigh show]
+\begin{lstlisting}[language=Bash, caption=ARP]
 \VAR{arp}
 \end{lstlisting}
 
@@ -248,7 +248,7 @@
 \subsection{Routing}
 
 
-\begin{lstlisting}[language=Bash, caption=ip route list]
+\begin{lstlisting}[language=Bash, caption=TABLE ROUTE]
 \VAR{routes}
 \end{lstlisting}
 
