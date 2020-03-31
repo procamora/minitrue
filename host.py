@@ -17,3 +17,6 @@ class Host:
     network: Text
     description: Text = str()
     id: int = int()
+
+    def __post_init__(self):
+        self.mac = self.mac.lower()

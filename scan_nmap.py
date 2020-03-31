@@ -8,12 +8,12 @@ import logging
 import subprocess
 import sys
 from ipaddress import IPv4Interface, IPv6Interface
-from typing import List, Optional, Tuple, Union, Dict, Text
+from typing import List, Tuple, Union, Dict, Text
 
 import netifaces
 import nmap
-from procamora_mac_vendor_lookup import MacLookup
 from procamora_logging import get_logging
+from mac_vendor_lookup_sync import MacLookup
 from procamora_ping import ping
 
 from host import Host
@@ -168,7 +168,7 @@ class ScanNmap:
         return response_host
 
     @staticmethod
-    def format_text(param_text: bytes) -> Optional[Text]:
+    def format_text(param_text: bytes) -> Text:
         """
         Metodo para formatear codigo, es usado para formatear las salidas de las llamadas al sistema
         :param param_text:
@@ -177,7 +177,7 @@ class ScanNmap:
         if param_text is not None:
             text = param_text.decode('utf-8')
             return str(text)
-        return param_text
+        return str()  # Si es None retorno string vacio
 
     @staticmethod
     def execute_command(command: Text) -> Tuple[Text, Text, subprocess.Popen]:

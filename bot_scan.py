@@ -28,6 +28,7 @@ start - Start the bot
 """
 
 import configparser
+import subprocess
 import sys
 import threading
 import time
@@ -156,14 +157,31 @@ def send_offline(message) -> NoReturn:
 def send_pdf(message) -> NoReturn:
     all_hosts: Dict[Text, Host] = select_all_hosts()
 
-    string_latex = generate_latex(all_hosts)
+    cmd_interfaces: Text = 'ip address show'
+    stdout_interfaces, stderr, ex = execute_command(cmd_interfaces)
+    cmd_arp: Text = 'ip neigh show'
+    stdout_arp, stderr, ex = execute_command(cmd_arp)
+    cmd_routes: Text = 'ip route list'
+    stdout_routes, stderr, ex = execute_command(cmd_routes)
+
+    string_latex = generate_latex(all_hosts, stdout_interfaces, stdout_arp, stdout_routes)
     execute, file = latex_to_pdf(string_latex)
 
     if execute.returncode == 0:
         # IMPORTANTE para que el dicumento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
         bot.send_document(message.chat.id, file, reply_markup=get_keyboard(), )
-    else:
-        bot.reply_to(message, str(execute.stdout.decode('utf-8')), reply_markup=get_keyboard())
+    else:  # Si la salida del comando excede el limite de mensaje de Telegram se trunca
+        new_msg = execute.stdout.decode('utf-8')
+        if len(new_msg) > 4096:
+            new_msg = f'{execute.stdout.decode("utf-8")[0:4050]}\n.................\nTruncated message'
+        bot.reply_to(message, new_msg, reply_markup=get_keyboard())
+    return
+
+
+@bot.message_handler(func=lambda message: message.chat.id == owner_bot)
+def text_not_valid(message) -> NoReturn:
+    texto: Text = 'unknown command, enter a valid command :)'
+    bot.reply_to(message, texto, reply_markup=get_keyboard())
     return
 
 
@@ -173,6 +191,30 @@ def handle_resto(message) -> NoReturn:
                   'Por lo que ya sabes, desaparece -.-'
     bot.reply_to(message, texto, reply_markup=get_keyboard())
     return  # solo esta puesto para que no falle la inspeccion de codigo
+
+
+def format_text(param_text: bytes) -> Text:
+    """
+    Metodo para formatear codigo, es usado para formatear las salidas de las llamadas al sistema
+    :param param_text:
+    :return:
+    """
+    if param_text is not None:
+        text = param_text.decode('utf-8')
+        return str(text)
+    return str()  # Si es None retorno string vacio
+
+
+def execute_command(command: Text) -> Tuple[Text, Text, subprocess.Popen]:
+    """
+    Metodo que realiza una llamada al sistema para ejecutar un comando
+    :param command:
+    :return:
+    """
+    # FIXME CAMBIAR Popen por run
+    execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = execute.communicate()
+    return format_text(stdout), format_text(stderr), execute
 
 
 def daemon_aux(host: Host):

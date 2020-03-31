@@ -6,7 +6,7 @@ python-nmap
 
 # Libreria propia obtener el fabricante de una MAC
 #mac_vendor_lookup
-procamora-mac-vendor-lookup
+#procamora-mac-vendor-lookup
 
 # Libreria propia para gestion de sqlite
 procamora-sqlite3
