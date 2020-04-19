@@ -1,0 +1,1455 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:xhtml="http://www.w3.org/1999/xhtml"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   style="background-color: rgb(255, 255, 255);"
+   version="1.1"
+   width="527px"
+   height="455px"
+   viewBox="-0.5 -0.5 527 455"
+   content="3cU2FsdNGVkX1X/qwvKkZu2Q4BO6p+0L3I7Ag1NTNOWKRtMn6D+kU=H8MQuIg5spXhRSeHRwTV7Idp0Eeg8z7bNzCRHM9HkKjhH1o2BrvZEUlv44o+T408idqcnWWWTW7NoV8a6TsvX8ONHWxjnQfUdhnrqPbkSxqRU6dR6MCexvo1Zkm7TqugcB5Cv49zBLBl6WS+348WpkOzTyZ+NECRPBYqw3t+YSwzTs+6ClYEHD+2Ks3lnPxuwxGOE4uJuZuELMCH0aqJr+rQV9Q5Rk1yVdvnctpo1WGvRx0IfHuspcfyIED3se914S5rAMgWk18iQ7pXaQ9OtnP99ALYMZBGaF3zdsPRBqDRw9MpQpDIzILmGukpoAUxOtGQ0J16guSEdMvPkQvl2Sb8qRhFXzkT/wfLuXIWSMwhekV+3lXGLfckW+48s+7E8QnhlrIkdTAaZZFuSERTihXHHCGNm7Vim4YjyD2GZ5TFiMqT5pl1oDoxivPsSxpT44+Q1vEd0K40OZre9gGUocaasJoykRZyhhoqxPih1JRQVRfCxu7VVFzyUSVmZYIRl4tJUg8iNjXwYLejVuqqLTb5CLaB9RFCZ8Q3CNAQAJWxrJATD58QZzxZjQvnG76o8z2Bm49QGb4I9B8Fw1rg4WY86NqCQDmSMN9nXj3bHQFtjcU5aKyIbliqudmZ0ZUlyDhjIJN0M+XtSvjbB7Zx7rVsBsfHAicuxeqaIM/6heVFiwVCtzUFSl6ckMz8Rf4uP6I6lx2OXdSIOpaMDtj391ezKcp4a4R6Tj+C/on6iK4fCdjT5WUDZ/oDZW7WhxIM9jHdAFp3NLXLRzn+iAUyJKNG2/8r52tF7x3YpSBqRKPWrlrR6jvy8S7iEyZkiw+fMmvlSo7F3S81dZnZWGjKPHO9FvLdp9/J9K3mxrqiOAUYked1BdKpUfcRzyCBVZi5w9ym/WQBB9x7SbGZpnXR9ESl5sBrqCfyV+2X/N7OIudveJeyVbk7Ow8knXWDtJBc5UlK2hAF7AHLpTNZOhg6srjXrwkO0uinCNwqfqG+7XReJ4XFpMZdiVetrxFL9eGXneh3xHHdh8SivHytDujF6W1+7pjLCjFHfg58XiCCk8xAqpIhX4VA598AJPU05CID6FjFaab+E7jGJtw80O2toD6amKuPUQJdcCsdD19rXgdjwD+ahZh5kfkTWvNtONy+u7c/pP9czTHFeEKvkOA3YDRJXQsBheQxaf0s51U5D8szilPQJ0aaH0C1pTCntfyrPdJsoRYK/DSg8v5v5nC138v1dkC9eYFcQJLaunQxtA66+7y7bCeT96bUvzJ2myR9OEu0xoSx+i5lH3sNxNvvEYcEQObvAmenc7GVG+Qu9cuNdxGKqNFB3OjTdbnQjKa9QWG5WlTh+U09PWUDv9LLm5jUmopWS03fgV0maETtBN1+v10mCVgS2TmGkwHFMmFRPELvTxp4jOSvxfm77Gzoa1j6kUvNB6opiFdA+pMZYr5vUMW2IHQo0yKwPRtjN+YIOdSxChw0EPsW8LWZ6sGgzGhs70TVgTdyA9CxvwUmfbUTxk5qScUJ1ATY9VtPWKevUYFuhURANNqbTNtjeBxi+lzvdXE8aHPyxzqNSZ8jCKb4RUFgzrivhvzoXYJOL2vHkiiLNTANKAAajAJO969zcjbbOisKi/17oW9/VEwbJt73wCp6wIlP0hG2LX4pdDBCQw43FThS/1zAT++8VTcr2ppXRglKf4SUOnS04y5J05XJIz2jLuX9sPT5+IOiclm7LO5TLM6pGFJjGmK4q1xlPFk9WF05pOCO0yMIoyIwzOz0oZAx2ouJtkc+XOvjMvHO7rbeDqEjx6cLzHvg6vv8ecLb6Y/Nzg6SCyWMDH13f5hi4xd1o/xcnOjarvjcsOF/wKbIh1VW3qhPP7nbNsA5md8YwqX0HecizqqojvaC6PgqSpqdJFb/ruqzHSoZ20sedCFT5gFGl6KIGa0+tV1tl3uKuH7J8/9fMB7PaC24tb45i+E+rfWa2N/SEPoInn4IBAnW8NaSfuHR3L+ST+RUTxSmj7Cy+sP04P6jhxdeK9QHJiUO2/LZvAyO/1h/CLT8n0iK79qW9Z9fyB9mdcA2RPDMzvi16kjA5qYjG9BEJPzxb2c/yj0h29iWoUyb2xHSC2KIfdZuojO46qW0I+f8eCOrXbx9wePa4zPbNHyy/pE7jwZsAdBcRRvoVtLZi+3UsPTQgsNCs/XLwjylB6qfHZ4DIkYBXwRKKM7gNpCJ6lZv2+m1ChToFs884jD+NslTV0WkNM+rYbDt20oAUNDmMI0iZSmNHtYFIl2OLL5vyvjgwgT03UlmV7LGH7W0DkvrI/MJlMFnEeanYi8v6gi+hxxN9MbmmJGv6/dv+3N6qmYFzE1n2UdXz21B/0mkfpO/vRkYrLxqr9zGoDt0qGaGF7m2fchTgfV0+/AMadFDbE7LchpxtC02LwIt23Ss8fWR5aOgMcSti7PkuLFrbb5i6ngsElB1dmGqAvETvqK0ujdrMtR2CJXSLl1cKQ6jawmlPbB77E06fKnXEiGaUPruxbe9dv/x8Sxj249i7fTZxd0FdqtI/PKVQyxJ+zbQ4fLoNUtKTRvQzhUlYwH+B+bcPb3clhgsgIFq1rh+uex/4otEs62TBZrm9eeNhPV18RHDxGrL6P0eUBHe9FhvFOHwZSpbih/3JDmob/Q2EEUY02vRs/3F7oFMhqj6k34Dx8oQW0hGvIISndM3KHyg/clCCseZFIcu40AKldYQUfjSIkyME+WsDpKCpeq8ESmhZ+Jg2bwjqidXIOtl8Qdwts3Ag3+C+qtGN+8IYrvCURrb+rN+Rsiasneq6hVS6J9Jk0DUeiyHS7SzG24Efd1siQhhY1ebaugE5e/9m5XbVMiHwPzIpC7KXvHicWGyzds2sTCAOVjett5mAdsSK9OQ1LFQtiFLktGTfeVn8pANXZYzmEWDaqKnJwvptGvBRNtZcthQAFXdvQVka5LRgqXY4l+yffzo/7DryyeASNkvZ3YR223QWggfScLfPMMZoSZ6cazT23OxPNVXZuFu9B4tXt/BfFsahr8Ldd8tcPMya4oCVPCmqWheFJHpGENF+mzQU18rzb0cBaZvkfU7aDt/04MqgXdNgl/19qCNhkB1Ih0BfvjGzIWA36pZmvWz+38UshMWc/AjjDGl39kZQz3RYXTIFIiqjoCZ45yz+rYXTlA/usulYNMMth22MaoPL2nlkf0dmVwR9l4R4LfcWIU/LG/Xj/qDaLCJiOYOO5N3M8ruQ+R0ce9BjJAt84n8MKy2siaDBJ2MOlMKHOf22T/h13awLbZFDXafKMpIPBzy3i/L7/n8ovqWfGsNHm2/8CnBKVVNDOKt07Lf/tpeInazES4VEPR/RZ0LFVlfbg9wYGfUr0IzV4bP5+4MBY+TkKgEHp0fmx7TToReO/hy37GrE+5nNU0qz3lJOCu6OlWzEpS4a4cM8//RRXzyTCsPlRbhNBizu23FT5hAIorCCF9RiFHexKfGx9Z4Cf8xovhOI1iIix7EFgsTSw11n7WilRLqVIC9YoiM/n/kUk8qvzQS3uG4f48FJUFiJOyZfU434I5TV/DBysOCu4SE4HaNvuDvLz/tnYGXcsVFv0IDIpz4NdviXfxpGk/nnJDnKQz+rlijLIMQ1WmLnKplkMGZaeZIPcBf9g4thU3Ldj6OYuOgsOMkGum+dVlyUYRsDQF60/XTU4IIi6SRdtZU3d6EiPMr8iur5tqvUWvwYiy7iDF6t7n7QitsdH8b1CbjTWYuqyW27eWgLMo4/9U2Btn9v/fMAtjWi+xk7b4vdnv8KLZDn+K4WuFkjPp/T6lwN00lAI9bWTvfgMYE49wWIutC3giRW3+rnpumcNOJj/FZTtYuXzsNlV4+1uw7SSRkHy/MPK72hi22O7Z01T02LX9WIeFnA5/G7PXihliCKrbNTbQSSv1tSMjkzuAtnb/vZ26X0rbKdnR1NtYvQtXeCst9Gr5O2xbDE6puDhlaXYGVp31YjC6/yYPU3+Ojc+jq9A7lNY2WPLphzsgoae1docxggH1NWiUljEd0MGZfHfAM5NDhc2uSCE9m/lfbAPCIE+26axT4wfONpKfjl+WnanbzgnGS3To4Afjzw2As7L/1HSiIF43kQlVnIKNeZVZrh/7hBkppzdkWvzkr+LnZHAThU0sj0LS7OHDTvtMkWanf0JdL/DDNDJyzqT2zBla7qjfl+h03lVmJdnwWZezIE3XFCir3SQOz9s+JWX1TJlKWUp5Nss1trTrSolKq14uySid3"
+   id="svg506"
+   sodipodi:docname="bot_scan_networks.svg"
+   inkscape:version="0.92.4 (unknown)">
+  <metadata
+     id="metadata510">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1021"
+     id="namedview508"
+     showgrid="false"
+     inkscape:zoom="2.0747253"
+     inkscape:cx="235.42167"
+     inkscape:cy="265.38718"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg506" />
+  <defs
+     id="defs4">
+    <style
+       type="text/css"
+       id="style2">ul { margin-top: 0px; margin-bottom: 10px } 
+ol { margin-top: 0px; margin-bottom: 10px } 
+ul { margin-top: 0px; margin-bottom: 10px } 
+ol { margin-top: 0px; margin-bottom: 10px } 
+ul { margin-top: 0px; margin-bottom: 10px } 
+ol { margin-top: 0px; margin-bottom: 10px } 
+</style>
+  </defs>
+  <g
+     id="g496">
+    <rect
+       x="0"
+       y="257.5"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect6" />
+    <rect
+       x="0"
+       y="257.5"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect8" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g12">
+      <text
+         x="42.5"
+         y="296"
+         id="text10">bot_scan</text>
+    </g>
+    <path
+       d="M 181.5 92.76 C 181.5 95.65 173.11 98 162.75 98 C 152.39 98 144 95.65 144 92.76 L 144 53.24 C 144 50.35 152.39 48 162.75 48 C 173.11 48 181.5 50.35 181.5 53.24 Z M 177.42 54.52 C 177.42 52.54 171.02 50.93 163.13 50.93 C 155.24 50.93 148.85 52.54 148.85 54.52 C 148.85 56.51 155.24 58.12 163.13 58.12 C 171.02 58.12 177.42 56.51 177.42 54.52 Z M 158.03 84.03 C 160.79 82.84 162.58 80.18 162.58 77.23 C 162.58 74.29 160.79 71.63 158.03 70.43 L 150.38 70.43 L 150.38 84.03 Z M 174.36 84.03 C 175.82 83.41 176.74 81.95 176.69 80.35 C 176.63 78.76 175.6 77.37 174.1 76.85 C 175.07 75.94 175.5 74.59 175.24 73.28 C 174.98 71.98 174.07 70.9 172.83 70.43 L 165.68 70.43 L 165.68 84.03 Z M 152.16 72.23 L 157.78 72.23 C 159.63 73.2 160.79 75.13 160.79 77.23 C 160.79 79.34 159.63 81.26 157.78 82.24 L 152.16 82.24 Z M 167.47 72.23 L 172.32 72.23 C 172.96 72.66 173.34 73.38 173.34 74.15 C 173.34 74.93 172.96 75.65 172.32 76.08 L 167.47 76.08 Z M 167.47 78.39 L 172.57 78.39 C 173.7 78.25 174.73 79.05 174.87 80.19 C 175.01 81.32 174.21 82.35 173.08 82.49 L 167.47 82.49 Z Z"
+       fill="#00bef2"
+       stroke="none"
+       pointer-events="none"
+       id="path14" />
+    <rect
+       x="236.5"
+       y="175"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect16" />
+    <rect
+       x="236.5"
+       y="175"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect18" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g26">
+      <text
+         x="279"
+         y="199.5"
+         id="text20">wait </text>
+      <text
+         x="279"
+         y="213.5"
+         id="text22">command</text>
+      <text
+         x="279"
+         y="227.5"
+         id="text24">telegram</text>
+    </g>
+    <path
+       d="M 236.5 367.45 L 187.11 393.94"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path28" />
+    <path
+       d="M 182.49 396.42 L 187 390.02 L 187.11 393.94 L 190.31 396.19 Z"
+       fill="#000000"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path30" />
+    <g
+       transform="translate(184.5,351.5)"
+       id="g60">
+      <switch
+         id="switch58">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="25"
+           height="27"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">write<xhtml:br />
+read</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 25px; height: 27px;"
+           width="25"
+           height="27"
+           version="1.1"
+           id="svg56">
+          <defs
+             id="defs34">
+            <path
+               id=".eZA2o6BsrR0KQGP"
+               d="M0,12.6 h25.166671752929688 M0,27 h25.166671752929688" />
+            <path
+               id="BeZA2o6BsrR0KQGQ"
+               d="M0,12.6 h25.166671752929688 M0,27 h25.166671752929688" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text44">
+            <textPath
+               xlink:href="#.eZA2o6BsrR0KQGP"
+               id="textPath42"><tspan
+   xml:space="preserve"
+   id="tspan36">write</tspan><tspan
+   xml:space="preserve"
+   id="tspan38" /><tspan
+   xml:space="preserve"
+   id="tspan40">read</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text54">
+            <textPath
+               xlink:href="#BeZA2o6BsrR0KQGQ"
+               id="textPath52"><tspan
+   xml:space="preserve"
+   id="tspan46">write</tspan><tspan
+   xml:space="preserve"
+   id="tspan48" /><tspan
+   xml:space="preserve"
+   id="tspan50">read</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <rect
+       x="236.5"
+       y="311"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect62" />
+    <rect
+       x="236.5"
+       y="311"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect64" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g68">
+      <text
+         x="279"
+         y="349.5"
+         id="text66">scan_nmap</text>
+    </g>
+    <path
+       d="M 237 72.94 L 187.65 72.87"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path70" />
+    <path
+       d="M 182.4 72.86 L 189.41 69.37 L 187.65 72.87 L 189.4 76.37 Z"
+       fill="#000000"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path72" />
+    <rect
+       x="237"
+       y="38"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect74" />
+    <rect
+       x="237"
+       y="38"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect76" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g80">
+      <text
+         x="279.5"
+         y="76.5"
+         id="text78">PyTaskIO</text>
+    </g>
+    <path
+       d="M 181.5 426.76 C 181.5 429.65 173.11 432 162.75 432 C 152.39 432 144 429.65 144 426.76 L 144 387.24 C 144 384.35 152.39 382 162.75 382 C 173.11 382 181.5 384.35 181.5 387.24 Z M 177.42 388.52 C 177.42 386.54 171.02 384.93 163.13 384.93 C 155.24 384.93 148.85 386.54 148.85 388.52 C 148.85 390.51 155.24 392.12 163.13 392.12 C 171.02 392.12 177.42 390.51 177.42 388.52 Z M 158.03 418.03 C 160.79 416.84 162.58 414.18 162.58 411.23 C 162.58 408.29 160.79 405.63 158.03 404.43 L 150.38 404.43 L 150.38 418.03 Z M 174.36 418.03 C 175.82 417.41 176.74 415.95 176.69 414.35 C 176.63 412.76 175.6 411.37 174.1 410.85 C 175.07 409.94 175.5 408.59 175.24 407.28 C 174.98 405.98 174.07 404.9 172.83 404.43 L 165.68 404.43 L 165.68 418.03 Z M 152.16 406.23 L 157.78 406.23 C 159.63 407.2 160.79 409.13 160.79 411.23 C 160.79 413.34 159.63 415.26 157.78 416.24 L 152.16 416.24 Z M 167.47 406.23 L 172.32 406.23 C 172.96 406.66 173.34 407.38 173.34 408.15 C 173.34 408.93 172.96 409.65 172.32 410.08 L 167.47 410.08 Z M 167.47 412.39 L 172.57 412.39 C 173.7 412.25 174.73 413.05 174.87 414.19 C 175.01 415.32 174.21 416.35 173.08 416.49 L 167.47 416.49 Z Z"
+       fill="#00bef2"
+       stroke="none"
+       pointer-events="none"
+       id="path82" />
+    <path
+       d="M 80 301.55 L 234.32 336.46"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path84" />
+    <path
+       d="M 222.38 339.91 L 235.41 336.7 L 225.03 328.2"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path86" />
+    <g
+       transform="translate(121.5,296.5)"
+       id="g101">
+      <switch
+         id="switch99">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="59"
+           height="12"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">new thread</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 59px; height: 12px;"
+           width="59"
+           height="12"
+           version="1.1"
+           id="svg97">
+          <defs
+             id="defs89">
+            <path
+               id="xeZA2o6BsrR0KQGR"
+               d="M0,12.6 h58.96665954589844" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text95">
+            <textPath
+               xlink:href="#xeZA2o6BsrR0KQGR"
+               startOffset="50%"
+               text-anchor="middle"
+               id="textPath93"><tspan
+   xml:space="preserve"
+   id="tspan91">new thread</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <path
+       d="M 80 275.72 L 234.65 210.86"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path103" />
+    <path
+       d="M 226.94 220.61 L 235.68 210.43 L 222.3 209.54"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path105" />
+    <g
+       transform="translate(129.5,232.5)"
+       id="g120">
+      <switch
+         id="switch118">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="17"
+           height="12"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">run</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 17px; height: 12px;"
+           width="17"
+           height="12"
+           version="1.1"
+           id="svg116">
+          <defs
+             id="defs108">
+            <path
+               id="ZeZA2o6BsrR0KQGS"
+               d="M0,12.6 h17.350006103515625" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text114">
+            <textPath
+               xlink:href="#ZeZA2o6BsrR0KQGS"
+               startOffset="50%"
+               text-anchor="middle"
+               id="textPath112"><tspan
+   xml:space="preserve"
+   id="tspan110">run</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <path
+       d="M 316.5 339.33 L 326.64 337.64 Q 336.5 336 336.5 346 L 336.5 351 Q 336.5 356 327.6 354.52 L 318.71 353.03"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path122" />
+    <path
+       d="M 330.43 348.9 L 317.6 352.85 L 328.45 360.74"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path124" />
+    <g
+       transform="translate(335.5,325.5)"
+       id="g177">
+      <switch
+         id="switch175">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="34"
+           height="41"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">repeat<xhtml:br />
+until<xhtml:br />
+n seg</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 34px; height: 41px;"
+           width="34"
+           height="41"
+           version="1.1"
+           id="svg173">
+          <defs
+             id="defs129">
+            <path
+               id="FeZA2o6BsrR0KQGT"
+               d="M0,12.6 h33.68333435058594 M0,27 h33.68333435058594 M0,41.4 h33.68333435058594" />
+            <path
+               id="VeZA2o6BsrR0KQGU"
+               d="M0,12.6 h33.68333435058594 M0,27 h33.68333435058594 M0,41.4 h33.68333435058594" />
+            <path
+               id="1eZA2o6BsrR0KQGV"
+               d="M0,12.6 h33.68333435058594 M0,27 h33.68333435058594 M0,41.4 h33.68333435058594" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text143">
+            <textPath
+               xlink:href="#FeZA2o6BsrR0KQGT"
+               id="textPath141"><tspan
+   xml:space="preserve"
+   id="tspan131">repeat</tspan><tspan
+   xml:space="preserve"
+   id="tspan133" /><tspan
+   xml:space="preserve"
+   id="tspan135">until</tspan><tspan
+   xml:space="preserve"
+   id="tspan137" /><tspan
+   xml:space="preserve"
+   id="tspan139">n seg</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text157">
+            <textPath
+               xlink:href="#VeZA2o6BsrR0KQGU"
+               id="textPath155"><tspan
+   xml:space="preserve"
+   id="tspan145">repeat</tspan><tspan
+   xml:space="preserve"
+   id="tspan147" /><tspan
+   xml:space="preserve"
+   id="tspan149">until</tspan><tspan
+   xml:space="preserve"
+   id="tspan151" /><tspan
+   xml:space="preserve"
+   id="tspan153">n seg</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text171">
+            <textPath
+               xlink:href="#1eZA2o6BsrR0KQGV"
+               id="textPath169"><tspan
+   xml:space="preserve"
+   id="tspan159">repeat</tspan><tspan
+   xml:space="preserve"
+   id="tspan161" /><tspan
+   xml:space="preserve"
+   id="tspan163">until</tspan><tspan
+   xml:space="preserve"
+   id="tspan165" /><tspan
+   xml:space="preserve"
+   id="tspan167">n seg</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <path
+       d="M 276.63 175 L 276.86 110.24"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path179" />
+    <path
+       d="M 282.82 121.14 L 276.87 109.12 L 270.82 121.1"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path181" />
+    <g
+       transform="translate(208.5,124.5)"
+       id="g211">
+      <switch
+         id="switch209">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="56"
+           height="27"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">write tasks<xhtml:br />
+read tasks</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 56px; height: 27px;"
+           width="56"
+           height="27"
+           version="1.1"
+           id="svg207">
+          <defs
+             id="defs185">
+            <path
+               id="NeZA2o6BsrR0KQGW"
+               d="M0,12.6 h56.44999694824219 M0,27 h56.44999694824219" />
+            <path
+               id="teZA2o6BsrR0KQGX"
+               d="M0,12.6 h56.44999694824219 M0,27 h56.44999694824219" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text195">
+            <textPath
+               xlink:href="#NeZA2o6BsrR0KQGW"
+               id="textPath193"><tspan
+   xml:space="preserve"
+   id="tspan187">write tasks</tspan><tspan
+   xml:space="preserve"
+   id="tspan189" /><tspan
+   xml:space="preserve"
+   id="tspan191">read tasks</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text205">
+            <textPath
+               xlink:href="#teZA2o6BsrR0KQGX"
+               id="textPath203"><tspan
+   xml:space="preserve"
+   id="tspan197">write tasks</tspan><tspan
+   xml:space="preserve"
+   id="tspan199" /><tspan
+   xml:space="preserve"
+   id="tspan201">read tasks</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <g
+       transform="translate(196.5,43.5)"
+       id="g241">
+      <switch
+         id="switch239">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="25"
+           height="27"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">write<xhtml:br />
+read</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 25px; height: 27px;"
+           width="25"
+           height="27"
+           version="1.1"
+           id="svg237">
+          <defs
+             id="defs215">
+            <path
+               id="9eZA2o6BsrR0KQGY"
+               d="M0,12.6 h25.166671752929688 M0,27 h25.166671752929688" />
+            <path
+               id="DeZA2o6BsrR0KQGZ"
+               d="M0,12.6 h25.166671752929688 M0,27 h25.166671752929688" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text225">
+            <textPath
+               xlink:href="#9eZA2o6BsrR0KQGY"
+               id="textPath223"><tspan
+   xml:space="preserve"
+   id="tspan217">write</tspan><tspan
+   xml:space="preserve"
+   id="tspan219" /><tspan
+   xml:space="preserve"
+   id="tspan221">read</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text235">
+            <textPath
+               xlink:href="#DeZA2o6BsrR0KQGZ"
+               id="textPath233"><tspan
+   xml:space="preserve"
+   id="tspan227">write</tspan><tspan
+   xml:space="preserve"
+   id="tspan229" /><tspan
+   xml:space="preserve"
+   id="tspan231">read</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <rect
+       x="443.5"
+       y="187.5"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect243" />
+    <rect
+       x="443.5"
+       y="187.5"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect245" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g251">
+      <text
+         x="486"
+         y="219"
+         id="text247">advanced</text>
+      <text
+         x="486"
+         y="233"
+         id="text249">nmap</text>
+    </g>
+    <rect
+       x="443.5"
+       y="0.5"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect253" />
+    <rect
+       x="443.5"
+       y="0.5"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect255" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g259">
+      <text
+         x="486"
+         y="39"
+         id="text257">get_hosts</text>
+    </g>
+    <rect
+       x="443.5"
+       y="382"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect261" />
+    <rect
+       x="443.5"
+       y="382"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect263" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g269">
+      <text
+         x="486"
+         y="413.5"
+         id="text265">other</text>
+      <text
+         x="486"
+         y="427.5"
+         id="text267">plugins</text>
+    </g>
+    <rect
+       x="443.5"
+       y="93"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect271" />
+    <rect
+       x="443.5"
+       y="93"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect273" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g279">
+      <text
+         x="486"
+         y="124.5"
+         id="text275">generate</text>
+      <text
+         x="486"
+         y="138.5"
+         id="text277">PDF</text>
+    </g>
+    <rect
+       x="443.5"
+       y="284"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="#00bef2"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect281" />
+    <rect
+       x="443.5"
+       y="284"
+       width="80"
+       height="70"
+       rx="15"
+       ry="15"
+       fill="none"
+       stroke="#64b19c"
+       pointer-events="none"
+       id="rect283" />
+    <g
+       fill="#000000"
+       font-family="Helvetica"
+       font-weight="bold"
+       text-anchor="middle"
+       font-size="12px"
+       id="g287">
+      <text
+         x="486"
+         y="322.5"
+         id="text285">openvas</text>
+    </g>
+    <path
+       d="M 316.5 176.28 L 441.79 70.66"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path289" />
+    <path
+       d="M 437.34 82.26 L 442.65 69.94 L 429.6 73.09"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path291" />
+    <path
+       d="M 316.5 194.15 L 441.42 144.67"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path293" />
+    <path
+       d="M 433.51 154.25 L 442.46 144.26 L 429.09 143.1"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path295" />
+    <path
+       d="M 316.5 212.42 L 441.27 219.95"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path297" />
+    <path
+       d="M 430.04 225.28 L 442.38 220.02 L 430.77 213.3"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path299" />
+    <path
+       d="M 316.5 231.06 L 441.52 296.9"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path301" />
+    <path
+       d="M 429.1 297.13 L 442.51 297.42 L 434.69 286.52"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path303" />
+    <path
+       d="M 311.5 245 L 446.92 380.42"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path305" />
+    <path
+       d="M 434.98 376.97 L 447.71 381.21 L 443.47 368.48"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path307" />
+    <path
+       d="M 236.5 367.45 L 187.11 393.94"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path309" />
+    <path
+       d="M 182.49 396.42 L 187 390.02 L 187.11 393.94 L 190.31 396.19 Z"
+       fill="#000000"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path311" />
+    <g
+       transform="translate(184.5,351.5)"
+       id="g341">
+      <switch
+         id="switch339">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="25"
+           height="27"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">write<xhtml:br />
+read</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 25px; height: 27px;"
+           width="25"
+           height="27"
+           version="1.1"
+           id="svg337">
+          <defs
+             id="defs315">
+            <path
+               id="reZA2o6BsrR0KQGa"
+               d="M0,12.6 h25.166671752929688 M0,27 h25.166671752929688" />
+            <path
+               id="7eZA2o6BsrR0KQGb"
+               d="M0,12.6 h25.166671752929688 M0,27 h25.166671752929688" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text325">
+            <textPath
+               xlink:href="#reZA2o6BsrR0KQGa"
+               id="textPath323"><tspan
+   xml:space="preserve"
+   id="tspan317">write</tspan><tspan
+   xml:space="preserve"
+   id="tspan319" /><tspan
+   xml:space="preserve"
+   id="tspan321">read</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text335">
+            <textPath
+               xlink:href="#7eZA2o6BsrR0KQGb"
+               id="textPath333"><tspan
+   xml:space="preserve"
+   id="tspan327">write</tspan><tspan
+   xml:space="preserve"
+   id="tspan329" /><tspan
+   xml:space="preserve"
+   id="tspan331">read</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <path
+       d="M 237 72.94 L 187.65 72.87"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path343" />
+    <path
+       d="M 182.4 72.86 L 189.41 69.37 L 187.65 72.87 L 189.4 76.37 Z"
+       fill="#000000"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path345" />
+    <path
+       d="M 80 301.55 L 234.32 336.46"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path347" />
+    <path
+       d="M 222.38 339.91 L 235.41 336.7 L 225.03 328.2"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path349" />
+    <g
+       transform="translate(121.5,296.5)"
+       id="g364">
+      <switch
+         id="switch362">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="59"
+           height="12"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">new thread</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 59px; height: 12px;"
+           width="59"
+           height="12"
+           version="1.1"
+           id="svg360">
+          <defs
+             id="defs352">
+            <path
+               id="HeZA2o6BsrR0KQGc"
+               d="M0,12.6 h58.96665954589844" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text358">
+            <textPath
+               xlink:href="#HeZA2o6BsrR0KQGc"
+               startOffset="50%"
+               text-anchor="middle"
+               id="textPath356"><tspan
+   xml:space="preserve"
+   id="tspan354">new thread</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <path
+       d="M 80 275.72 L 234.65 210.86"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path366" />
+    <path
+       d="M 226.94 220.61 L 235.68 210.43 L 222.3 209.54"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path368" />
+    <g
+       transform="translate(129.5,232.5)"
+       id="g383">
+      <switch
+         id="switch381">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="17"
+           height="12"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">run</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 17px; height: 12px;"
+           width="17"
+           height="12"
+           version="1.1"
+           id="svg379">
+          <defs
+             id="defs371">
+            <path
+               id="3eZA2o6BsrR0KQGd"
+               d="M0,12.6 h17.350006103515625" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text377">
+            <textPath
+               xlink:href="#3eZA2o6BsrR0KQGd"
+               startOffset="50%"
+               text-anchor="middle"
+               id="textPath375"><tspan
+   xml:space="preserve"
+   id="tspan373">run</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <path
+       d="M 316.5 339.33 L 326.64 337.64 Q 336.5 336 336.5 346 L 336.5 351 Q 336.5 356 327.6 354.52 L 318.71 353.03"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path385" />
+    <path
+       d="M 330.43 348.9 L 317.6 352.85 L 328.45 360.74"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path387" />
+    <g
+       transform="translate(335.5,325.5)"
+       id="g440">
+      <switch
+         id="switch438">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="34"
+           height="41"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">repeat<xhtml:br />
+until<xhtml:br />
+n seg</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 34px; height: 41px;"
+           width="34"
+           height="41"
+           version="1.1"
+           id="svg436">
+          <defs
+             id="defs392">
+            <path
+               id="veZA2o6BsrR0KQGe"
+               d="M0,12.6 h33.68333435058594 M0,27 h33.68333435058594 M0,41.4 h33.68333435058594" />
+            <path
+               id="feZA2o6BsrR0KQGf"
+               d="M0,12.6 h33.68333435058594 M0,27 h33.68333435058594 M0,41.4 h33.68333435058594" />
+            <path
+               id="_eZA2o6BsrR0KQGg"
+               d="M0,12.6 h33.68333435058594 M0,27 h33.68333435058594 M0,41.4 h33.68333435058594" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text406">
+            <textPath
+               xlink:href="#veZA2o6BsrR0KQGe"
+               id="textPath404"><tspan
+   xml:space="preserve"
+   id="tspan394">repeat</tspan><tspan
+   xml:space="preserve"
+   id="tspan396" /><tspan
+   xml:space="preserve"
+   id="tspan398">until</tspan><tspan
+   xml:space="preserve"
+   id="tspan400" /><tspan
+   xml:space="preserve"
+   id="tspan402">n seg</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text420">
+            <textPath
+               xlink:href="#feZA2o6BsrR0KQGf"
+               id="textPath418"><tspan
+   xml:space="preserve"
+   id="tspan408">repeat</tspan><tspan
+   xml:space="preserve"
+   id="tspan410" /><tspan
+   xml:space="preserve"
+   id="tspan412">until</tspan><tspan
+   xml:space="preserve"
+   id="tspan414" /><tspan
+   xml:space="preserve"
+   id="tspan416">n seg</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text434">
+            <textPath
+               xlink:href="#_eZA2o6BsrR0KQGg"
+               id="textPath432"><tspan
+   xml:space="preserve"
+   id="tspan422">repeat</tspan><tspan
+   xml:space="preserve"
+   id="tspan424" /><tspan
+   xml:space="preserve"
+   id="tspan426">until</tspan><tspan
+   xml:space="preserve"
+   id="tspan428" /><tspan
+   xml:space="preserve"
+   id="tspan430">n seg</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <path
+       d="M 276.63 175 L 276.86 110.24"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path442" />
+    <path
+       d="M 282.82 121.14 L 276.87 109.12 L 270.82 121.1"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path444" />
+    <g
+       transform="translate(208.5,124.5)"
+       id="g474">
+      <switch
+         id="switch472">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="56"
+           height="27"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: center;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">write tasks<xhtml:br />
+read tasks</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <svg
+           style="width: 56px; height: 27px;"
+           width="56"
+           height="27"
+           version="1.1"
+           id="svg470">
+          <defs
+             id="defs448">
+            <path
+               id="g.ZA2o6BsrR0KQGh"
+               d="M0,12.6 h56.44999694824219 M0,27 h56.44999694824219" />
+            <path
+               id="Q.ZA2o6BsrR0KQGi"
+               d="M0,12.6 h56.44999694824219 M0,27 h56.44999694824219" />
+          </defs>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text458">
+            <textPath
+               xlink:href="#g.ZA2o6BsrR0KQGh"
+               id="textPath456"><tspan
+   xml:space="preserve"
+   id="tspan450">write tasks</tspan><tspan
+   xml:space="preserve"
+   id="tspan452" /><tspan
+   xml:space="preserve"
+   id="tspan454">read tasks</tspan></textPath>
+          </text>
+          <text
+             fill="rgb(0, 0, 0)"
+             font-size="12px"
+             font-family="Helvetica"
+             font-weight="400"
+             id="text468">
+            <textPath
+               xlink:href="#Q.ZA2o6BsrR0KQGi"
+               id="textPath466"><tspan
+   xml:space="preserve"
+   id="tspan460">write tasks</tspan><tspan
+   xml:space="preserve"
+   id="tspan462" /><tspan
+   xml:space="preserve"
+   id="tspan464">read tasks</tspan></textPath>
+          </text>
+        </svg>
+      </switch>
+    </g>
+    <path
+       d="M 316.5 176.28 L 441.79 70.66"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path476" />
+    <path
+       d="M 437.34 82.26 L 442.65 69.94 L 429.6 73.09"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path478" />
+    <path
+       d="M 316.5 194.15 L 441.42 144.67"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path480" />
+    <path
+       d="M 433.51 154.25 L 442.46 144.26 L 429.09 143.1"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path482" />
+    <path
+       d="M 316.5 212.42 L 441.27 219.95"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path484" />
+    <path
+       d="M 430.04 225.28 L 442.38 220.02 L 430.77 213.3"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path486" />
+    <path
+       d="M 316.5 231.06 L 441.52 296.9"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path488" />
+    <path
+       d="M 429.1 297.13 L 442.51 297.42 L 434.69 286.52"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path490" />
+    <path
+       d="M 311.5 245 L 446.92 380.42"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       stroke-dasharray="3 3"
+       pointer-events="none"
+       id="path492" />
+    <path
+       d="M 434.98 376.97 L 447.71 381.21 L 443.47 368.48"
+       fill="none"
+       stroke="#000000"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path494" />
+  </g>
+</svg>

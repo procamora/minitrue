@@ -8,6 +8,8 @@ python-nmap
 #mac_vendor_lookup
 #procamora-mac-vendor-lookup
 
+requests
+
 # Libreria propia para gestion de sqlite
 procamora-sqlite3
 

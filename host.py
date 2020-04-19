@@ -18,5 +18,5 @@ class Host:
     description: Text = str()
     id: int = int()
 
-    def __post_init__(self):
+    def __post_init__(self: Host):
         self.mac = self.mac.lower()

@@ -7,6 +7,9 @@ This is a project whose main functionality is to have the entire network monitor
 It is being designed to be easily extensible through plugins, as it may allow to enhance an advanced scan with nmap or OpenVas.
 
 
+![bot_scan_networks][bot_scan_networks]
+
+[bot_scan_networks]: bot_scan_networks.svg
 
 
 # Installation
