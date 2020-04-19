@@ -13,17 +13,20 @@ from typing import List, Tuple, Union, Dict, Text
 import netifaces
 import nmap
 from procamora_logging import get_logging
-from mac_vendor_lookup_sync import MacLookup
 from procamora_ping import ping
 
 from host import Host
 from implement_sqlite import select_all_hosts, insert_host, update_host, update_host_offline
+from mac_vendor_lookup_sync import MacLookup
 
-logger: logging = get_logging(True, 'scan_nmap')
+logger: logging = get_logging(False, 'scan_nmap')
 
 
 class ScanNmap:
     def __init__(self, subnets: List[Union[IPv4Interface, IPv6Interface]] = None):
+        self.nmap_tcp_scan: Text = '--top-ports 1000 --open -T5 -sV -v -n'
+        self.nmap_ping_scan: Text = '-n -sP'
+
         self.local_interfaces: Dict[Text, Text] = dict()
         self.subnets: List[Union[IPv4Interface, IPv6Interface]] = list()
         self.hosts_db: Dict[Text, Host] = dict()
@@ -94,7 +97,7 @@ class ScanNmap:
         """
         hosts: List[Host] = list()
         nm: nmap.nmap.PortScanner = nmap.PortScanner()
-        scan: Dict = nm.scan(hosts=str(subnet), arguments='-n -sP', sudo=False)
+        scan: Dict = nm.scan(hosts=str(subnet), arguments=self.nmap_ping_scan, sudo=False)
         logger.debug(nm.command_line())
 
         ip: Text
@@ -118,6 +121,25 @@ class ScanNmap:
             hosts.append(host)
 
         return hosts
+
+    def tcp_scan(self: ScanNmap, param_ip: Union[ipaddress.IPv4Interface, ipaddress.IPv6Interface]) -> Text:
+        """
+        Metodo encargado de realizar el escaneo a un host buscando servicios activos
+        :param param_ip:
+        :return:
+        """
+        nm: nmap.nmap.PortScanner = nmap.PortScanner()
+        # sudo nmap --top-ports 1000 --open -T5 -sV -v -n 192.168.1.71
+        nm.scan(hosts=str(param_ip), arguments=self.nmap_tcp_scan, sudo=True)
+        logger.debug(nm.command_line())
+
+        ip: nmap.nmap.PortScannerHostDict = nm[nm.all_hosts()[0]]
+        ports: Text = f'#{param_ip}\n'
+        logger.info(ip)
+        for port in ip['tcp']:
+            service = ip['tcp'][port]
+            ports += f'{port} ({service["name"]}): {service["product"]} (v{service["version"]})\n'
+        return ports
 
     def update_or_insert_host(self: ScanNmap, hosts: List[Host]) -> List[Host]:
         """

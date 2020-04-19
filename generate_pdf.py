@@ -20,7 +20,7 @@ logger: logging = get_logging(False, 'pdf')
 
 def generate_latex(hosts: Dict[Text, Host], interfaces: Text, arp: Text, routes: Text) -> Text:
     working_path: Path = Path(__file__).resolve().parent
-    #report_path: Path = Path(working_path, 'resources', 'templates', 'report.tex')
+    # report_path: Path = Path(working_path, 'resources', 'templates', 'report.tex')
     personal_icon_path: Path = Path(working_path, 'resources', 'icons', 'personal.png')
     proyect_icon_path: Path = Path(working_path, 'resources', 'icons', 'logo_transparent.png')
 
@@ -44,7 +44,7 @@ def generate_latex(hosts: Dict[Text, Host], interfaces: Text, arp: Text, routes:
     title_pdf = r'\href{https://telegram.me/procamora_scan_bot}{procamora_scan_bot}'
 
     latex_generate = template.render(date=now.strftime("%m/%d/%Y"), title=title_pdf, author='asdasd', hosts=hosts,
-                                     icon1=str(personal_icon_path), icon2=str(proyect_icon_path), 
+                                     icon1=str(personal_icon_path), icon2=str(proyect_icon_path),
                                      interfaces=interfaces, arp=arp, routes=routes)
     return latex_generate
 
@@ -70,7 +70,7 @@ def latex_to_pdf(code_latex) -> Optional[Tuple[subprocess.CompletedProcess, Any]
     file_data = open(str(response), 'rb')
 
     ####################
-    import  time
+    import time
     import os
     os.system(f'okular {str(response)}')
     time.sleep(20)

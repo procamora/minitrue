@@ -14,6 +14,7 @@
 \usepackage[figurename=Figura]{caption} % Gestión nombre del caption
 \usepackage{smartdiagram} % Inserción de diagramas
 \usepackage{zed-csp} % Inserción de esquemas
+\usepackage{datetime}
 %\usepackage{mwe}
 
 % Declaración de variables
@@ -40,7 +41,7 @@
     \or November  % 11
     \or December  % 12
   \fi}
-\newcommand{\myDate}{\number\day\space \myMonth \number\year}
+\newcommand{\myDate}{\currenttime\space \number\day\space \myMonth \number\year}
 
 
 % Definicion metadados PDF

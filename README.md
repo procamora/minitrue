@@ -1,4 +1,4 @@
-# bot_scan_networks
+# minitrue
 
 
 This is a project whose main functionality is to have the entire network monitored. A ping-based scan is performed using nmap to check for new computers on the network. Each of the computers on the network is registered in a local database, which it uses to check for new computers. If new equipment is detected, it will send a notification with a telegram bot to the administrator to indicate that a new host has been detected.
@@ -7,9 +7,9 @@ This is a project whose main functionality is to have the entire network monitor
 It is being designed to be easily extensible through plugins, as it may allow to enhance an advanced scan with nmap or OpenVas.
 
 
-![bot_scan_networks][bot_scan_networks]
+![minitrue][minitrue]
 
-[bot_scan_networks]: bot_scan_networks.svg
+[minitrue]: bot_scan_networks.svg
 
 
 # Installation
@@ -24,11 +24,11 @@ pip3 install -r requirements.txt --user
 It is also necessary to install certain utilities in Linux, these can be installed as:
 
 ```bash
-sudo apt install nmap texlive-latex-recommended texlive-latex-extra
+sudo apt install nmap texlive-latex-recommended texlive-latex-extra texlive-datetime
 
 # or
 
-sudo dnf install nmap texlive-latex-recommended texlive-latex-extra
+sudo dnf install nmap texlive-latex-recommended texlive-latex-extra texlive-datetime
 ```
 
 
@@ -49,16 +49,15 @@ python3 bot_scan.py
 - Manufacturer information for each MAC
 - Generation of a PDF report with information from the network
 - Information stored in a SQLITE database
-
+- IP Scanning using nmap
 
 
 # Pending
 
 - [ ] Generar pdf se tiene que lanzar en un hilo con la instancia de bot, para que genere el pdf tranquilamente sin bloquear el bot
 - [ ] Implementar para IPv6
-- [ ] EN el \_\_init\_\_ si la BD no existe crearla con la estrucutra basica
-
-- [ ] nmap con mas info a una o varias IP
+- [x] EN el \_\_init\_\_ si la BD no existe crearla con la estrucutra basica
+- [x] nmap con mas info a una o varias IP
 - [ ] Implementar escaneos con OpenVas
 - [ ] Hacer un MITM, obtener mac del router (ip route) mac spoffing
 - [ ] Capturar trafico tshark, tcpdump, etc

@@ -12,7 +12,7 @@ from procamora_sqlite3 import conection_sqlite, execute_script_sqlite
 
 from host import Host
 
-logger: logging = get_logging(True, 'sqlite')
+logger: logging = get_logging(False, 'sqlite')
 
 # Ruta absoluta de la BD
 DB: Path = Path(Path(__file__).resolve().parent, "database.db")
