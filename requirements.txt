@@ -1,3 +1,5 @@
+beautifulsoup4
+lxml
 # Obtener interfaces locales y sus MACs
 netifaces
 
@@ -10,11 +12,8 @@ python-nmap
 
 requests
 
-# Libreria propia para gestion de sqlite
-procamora-sqlite3
-
-# Libreria propia para realizar ping
-procamora-ping
+# Libreria propia para gestion de sqlite ping
+procamora-utils
 
 # Telegram Bot
 pyTelegramBotAPI

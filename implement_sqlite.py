@@ -7,8 +7,8 @@ import sqlite3
 from pathlib import Path  # nueva forma de trabajar con rutas
 from typing import Dict, Any, List, Text, NoReturn
 
-from procamora_logging import get_logging
-from procamora_sqlite3 import conection_sqlite, execute_script_sqlite
+from procamora_utils.interface_sqlite import conection_sqlite, execute_script_sqlite
+from procamora_utils.logger import get_logging
 
 from host import Host
 

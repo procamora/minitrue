@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, Text, Tuple, Any, Optional
 
 import jinja2
-from procamora_logging import get_logging
+from procamora_utils.logger import get_logging
 
 from host import Host
 
@@ -21,8 +21,8 @@ logger: logging = get_logging(False, 'pdf')
 def generate_latex(hosts: Dict[Text, Host], interfaces: Text, arp: Text, routes: Text) -> Text:
     working_path: Path = Path(__file__).resolve().parent
     # report_path: Path = Path(working_path, 'resources', 'templates', 'report.tex')
-    personal_icon_path: Path = Path(working_path, 'resources', 'icons', 'personal.png')
-    proyect_icon_path: Path = Path(working_path, 'resources', 'icons', 'logo_transparent.png')
+    personal_icon_path: Path = Path(working_path, 'resources', 'images', 'personal.png')
+    proyect_icon_path: Path = Path(working_path, 'resources', 'images', 'logo_transparent.png')
 
     latex_jinja_env = jinja2.Environment(
         block_start_string='\BLOCK{',

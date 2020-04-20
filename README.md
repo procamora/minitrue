@@ -9,7 +9,7 @@ It is being designed to be easily extensible through plugins, as it may allow to
 
 ![minitrue][minitrue]
 
-[minitrue]: bot_scan_networks.svg
+[minitrue]: resources/images/bot_scan_networks.svg
 
 
 # Installation
@@ -36,7 +36,7 @@ sudo dnf install nmap texlive-latex-recommended texlive-latex-extra texlive-date
 
 
 
-```python
+```bash
 python3 bot_scan.py
 ```
 

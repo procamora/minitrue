@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Text, NoReturn, Dict, AnyStr
 
 import requests
-from procamora_logging import get_logging
+from procamora_utils.logger import get_logging
 
 logger: logging = get_logging(False, 'mac_lockup')
 

@@ -8,12 +8,12 @@ import logging
 import subprocess
 import sys
 from ipaddress import IPv4Interface, IPv6Interface
-from typing import List, Tuple, Union, Dict, Text
+from typing import List, Tuple, Union, Dict, Text, NoReturn
 
 import netifaces
 import nmap
-from procamora_logging import get_logging
-from procamora_ping import ping
+from procamora_utils.logger import get_logging
+from procamora_utils.ping import ping
 
 from host import Host
 from implement_sqlite import select_all_hosts, insert_host, update_host, update_host_offline
@@ -23,7 +23,7 @@ logger: logging = get_logging(False, 'scan_nmap')
 
 
 class ScanNmap:
-    def __init__(self, subnets: List[Union[IPv4Interface, IPv6Interface]] = None):
+    def __init__(self: ScanNmap, subnets: List[Union[IPv4Interface, IPv6Interface]] = None) -> NoReturn:
         self.nmap_tcp_scan: Text = '--top-ports 1000 --open -T5 -sV -v -n'
         self.nmap_ping_scan: Text = '-n -sP'
 
@@ -41,10 +41,10 @@ class ScanNmap:
         self.update_db()
         logger.info(self.subnets)
 
-    def update_db(self: ScanNmap):
+    def update_db(self: ScanNmap) -> NoReturn:
         self.hosts_db = select_all_hosts()
 
-    def set_local_interfaces(self: ScanNmap):
+    def set_local_interfaces(self: ScanNmap) -> NoReturn:
         """
         Metodo para obtener todas las interfaces del sistema que tienen asignada una direccion IP y enlazarla con su MAC
         en un diccionario
