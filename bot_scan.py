@@ -37,6 +37,7 @@ from ipaddress import IPv4Interface, IPv6Interface
 from pathlib import Path
 from typing import NoReturn, Tuple, List, Union, Text, Dict
 
+from procamora_utils.ip import IP
 from requests import exceptions
 # Importamos la librería Y los tipos especiales de esta
 from telebot import TeleBot, types, apihelper
@@ -46,6 +47,7 @@ from terminaltables import AsciiTable
 from generate_pdf import latex_to_pdf, generate_latex
 from host import Host
 from implement_sqlite import select_all_hosts, select_hosts_online, select_hosts_offline, check_database
+from openvas import OpenVas
 from scan_nmap import ScanNmap, logger
 
 
@@ -59,6 +61,11 @@ DELAY = 30
 [DEBUG]
 ADMIN = 111111
 BOT_TOKEN = 1069111113:AAHOk9K5TAAAAAAAAAAIY1OgA_LNpAAAAA
+
+[OPENVAS]
+IP = 192.168.1.71
+USER = admin
+PASSWD = asas
 '''
 
 
@@ -110,15 +117,40 @@ def daemon_tcp_scan(ip: Text, message: types.Message):
     bot.reply_to(message, ports, reply_markup=get_markup_cmd())
 
 
+def daemon_openvas_scan(target: Text, message: types.Message):
+    ov: configparser.SectionProxy = config["OPENVAS"]
+    openvas: OpenVas = OpenVas(IP(ip=ov.get('IP')), ov.get('USER'), ov.get('PASSWD'))
+    report_id: Text = openvas.analize_ip(IP(ip=target), '74db13d6-7489-11df-91b9-002264764cea', 'T: 22')
+    bot.reply_to(message, 'solo esceneo el puerto 22, lanzar nmpa para saber que puertos escanear',
+                 reply_markup=get_markup_cmd())
+    regex: Text = rf'id: {report_id},.*severity: (.*)'
+    stop: bool = False
+
+    while not stop:
+        list_tasks = openvas.list_tasks()
+        res = re.search(regex, list_tasks)
+        if res and int(res.group(1)) != -1:
+            stop = True
+        time.sleep(10)
+
+    openvas.report(report_id, 'html')
+    file_data = open(f'{report_id}.html', 'rb')
+    bot.send_document(message, file_data, reply_markup=get_markup_cmd())
+
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call: types.CallbackQuery):
+    ip: Text = call.data.split('_')[1]
     if re.search(r'nmap_.*', call.data):
-        bot.answer_callback_query(call.id, f"run thread scan tcp nmap to {call.data.split('_')[1]}")
-        d = threading.Thread(target=daemon_tcp_scan, name='tcp_scan', args=(call.data.split('_')[1], call.message))
+        bot.answer_callback_query(call.id, f"run thread scan tcp nmap to {ip}")
+        d = threading.Thread(target=daemon_tcp_scan, name='tcp_scan', args=(ip, call.message))
         d.setDaemon(True)
         d.start()
     elif re.search(r'openvas_.*', call.data):
-        bot.answer_callback_query(call.id, "run openvas, not implemented")
+        bot.answer_callback_query(call.id, f"run thread scan tcp openvas to {ip}")
+        d = threading.Thread(target=daemon_openvas_scan, name='openvas_scan', args=(ip, call.message))
+        d.setDaemon(True)
+        d.start()
 
 
 # Handle always first "/start" message when new chat with your bot is created

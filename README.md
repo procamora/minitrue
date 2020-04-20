@@ -12,6 +12,12 @@ It is being designed to be easily extensible through plugins, as it may allow to
 [minitrue]: resources/images/bot_scan_networks.svg
 
 
+bot telegram:
+
+![tg][tg]
+
+[tg]: resources/images/tg.png
+
 # Installation
 
 
