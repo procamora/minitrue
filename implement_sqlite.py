@@ -5,7 +5,7 @@
 import logging
 import sqlite3
 from pathlib import Path  # nueva forma de trabajar con rutas
-from typing import Dict, Any, List, Text, NoReturn
+from typing import Dict, Any, List, Text, NoReturn, Tuple
 
 from procamora_utils.interface_sqlite import conection_sqlite, execute_script_sqlite
 from procamora_utils.logger import get_logging
@@ -30,15 +30,15 @@ def select_all_hosts() -> Dict[Text, Host]:
     return response
 
 
-def select_hosts_online() -> List[List[Text]]:
+def select_hosts_online() -> List[Tuple[Text, Any]]:
     query: Text = "SELECT ip, vendor FROM Hosts WHERE active LIKE 1"
-    response_query: List[List[Text]] = conection_sqlite(DB, query, is_dict=False)
+    response_query: List[Tuple[Text, Any]] = conection_sqlite(DB, query, is_dict=False)
     return response_query
 
 
-def select_hosts_offline() -> List[List[Text]]:
+def select_hosts_offline() -> List[Tuple[Text, Any]]:
     query: Text = "SELECT ip, vendor FROM Hosts WHERE active LIKE 0"
-    response_query: List[List[Text]] = conection_sqlite(DB, query, is_dict=False)
+    response_query: List[Tuple[Text, Any]] = conection_sqlite(DB, query, is_dict=False)
     return response_query
 
 

@@ -25,11 +25,11 @@ def generate_latex(hosts: Dict[Text, Host], interfaces: Text, arp: Text, routes:
     proyect_icon_path: Path = Path(working_path, 'resources', 'images', 'logo_transparent.png')
 
     latex_jinja_env = jinja2.Environment(
-        block_start_string='\BLOCK{',
+        block_start_string=r'\BLOCK{',
         block_end_string='}',
-        variable_start_string='\VAR{',
+        variable_start_string=r'\VAR{',
         variable_end_string='}',
-        comment_start_string='\#{',
+        comment_start_string=r'\#{',
         comment_end_string='}',
         line_statement_prefix='%%',
         line_comment_prefix='%#',
@@ -101,11 +101,11 @@ def execute_command(command: Text) -> Tuple[Text, Text, subprocess.Popen]:
     """
     # FIXME CAMBIAR Popen por run
     execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = execute.communicate()
-    return format_text(stdout), format_text(stderr), execute
+    out, err = execute.communicate()
+    return format_text(out), format_text(err), execute
 
 
-if __name__ == '__main__':
+def main():
     aaaaaaa = {
         '192.168.1.1': Host(ip='192.168.1.1', mac='00:00:00:00:00:00', active=True, vendor='Sagemcom Broadband SAS',
                             date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='router', id=1),
@@ -126,4 +126,8 @@ if __name__ == '__main__':
     stdout_routes, stderr, ex = execute_command(cmd_routes)
 
     string_latex = generate_latex(aaaaaaa, stdout_interfaces, stdout_arp, stdout_routes)
-    execute, file = latex_to_pdf(string_latex)
+    latex_to_pdf(string_latex)
+
+
+if __name__ == '__main__':
+    main()

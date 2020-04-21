@@ -7,11 +7,11 @@ import ipaddress
 import logging
 import subprocess
 import sys
-from ipaddress import IPv4Interface, IPv6Interface
 from typing import List, Tuple, Union, Dict, Text, NoReturn
 
 import netifaces
 import nmap
+from procamora_utils.ip import IP
 from procamora_utils.logger import get_logging
 from procamora_utils.ping import ping
 
@@ -23,12 +23,12 @@ logger: logging = get_logging(False, 'scan_nmap')
 
 
 class ScanNmap:
-    def __init__(self: ScanNmap, subnets: List[Union[IPv4Interface, IPv6Interface]] = None) -> NoReturn:
+    def __init__(self: ScanNmap, subnets: ipaddress.ip_interface = None) -> NoReturn:
         self.nmap_tcp_scan: Text = '--top-ports 1000 --open -T5 -sV -v -n'
         self.nmap_ping_scan: Text = '-n -sP'
 
         self.local_interfaces: Dict[Text, Text] = dict()
-        self.subnets: List[Union[IPv4Interface, IPv6Interface]] = list()
+        self.subnets: List[ipaddress.ip_interface] = list()
         self.hosts_db: Dict[Text, Host] = dict()
         self.vendor = MacLookup()
         self.vendor.load_vendors()
@@ -122,7 +122,7 @@ class ScanNmap:
 
         return hosts
 
-    def tcp_scan(self: ScanNmap, param_ip: Union[ipaddress.IPv4Interface, ipaddress.IPv6Interface]) -> Text:
+    def tcp_scan(self: ScanNmap, param_ip: ipaddress.ip_interface) -> Tuple[Text, List[int]]:
         """
         Metodo encargado de realizar el escaneo a un host buscando servicios activos
         :param param_ip:
@@ -135,11 +135,13 @@ class ScanNmap:
 
         ip: nmap.nmap.PortScannerHostDict = nm[nm.all_hosts()[0]]
         ports: Text = f'#{param_ip}\n'
+        list_ports: List[int] = list()
         logger.info(ip)
         for port in ip['tcp']:
+            list_ports.append(int(port))
             service = ip['tcp'][port]
             ports += f'{port} ({service["name"]}): {service["product"]} (v{service["version"]})\n'
-        return ports
+        return ports, list_ports
 
     def update_or_insert_host(self: ScanNmap, hosts: List[Host]) -> List[Host]:
         """
@@ -167,7 +169,7 @@ class ScanNmap:
         hosts que se han encontrado
         :return:
         """
-        subnet: Union[IPv4Interface, IPv6Interface]
+        subnet: ipaddress.ip_interface
         response_host: List[Host] = list()
 
         for subnet in self.subnets:
@@ -177,8 +179,8 @@ class ScanNmap:
             # Si ponemos IP valida (x.x.x.x/x) en vez de subred  ej: (x.x.x.0/x), comprobamos que la IP esta online
             # sino lo esta se omite, para evitar fallos de escritura y que  pierda tiempo escaneando la red
             if str(subnet) != str(subnet.network):
-                logger.info(f'Scanning: {ping(str(subnet.ip))}')
-                valid = ping(str(subnet.ip))
+                logger.info(f'Scanning: {ping(IP(ip=str(subnet.ip)))}')
+                valid = ping(IP(ip=str(subnet.ip)))
 
             if valid:
                 hosts: List[Host] = self.ping_scan(subnet)
@@ -215,9 +217,9 @@ class ScanNmap:
 
 
 def main(args: List[Text]):
-    list_networks: List[Union[IPv4Interface, IPv6Interface]] = list(map(lambda ip: ipaddress.ip_interface(ip), args))
+    list_networks: List[ipaddress.ip_interface] = list(map(lambda ip: ipaddress.ip_interface(ip), args))
     # mismo metodo pero mas legible :)
-    # list_networks: List[Union[IPv4Interface, IPv6Interface]] = list()
+    # list_networks: List[ipaddress.ip_interface] = list()
     # for ip in args:
     #    list_networks.append(ipaddress.ip_interface(ip))
 
