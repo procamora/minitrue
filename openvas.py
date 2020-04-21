@@ -5,13 +5,12 @@ from __future__ import annotations
 
 import argparse  # https://docs.python.org/3/library/argparse.html
 import datetime
-# import re
 import logging
 import sys
 from base64 import b64decode
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional, Dict, NoReturn, Text
+from typing import Optional, Dict, NoReturn, Text, Tuple
 
 from bs4 import BeautifulSoup
 from gvm.connections import TLSConnection
@@ -22,13 +21,12 @@ from lxml import etree
 from procamora_utils.ip import IP
 from procamora_utils.logger import get_logging
 
-logger: logging = get_logging(False, 'openvas')
+logger: logging = get_logging(True, 'openvas')
 
-
-# config Full and fast               daba56c8-73ec-11df-a475-002264764cea
-# config Full and fast ultimate      698f691e-7489-11df-9d8c-002264764cea
-# config Full and very deep          708f25c4-7489-11df-8094-002264764cea
-# config Full and very deep ultimate 74db13d6-7489-11df-91b9-002264764cea
+FULL_FAST: Text = 'daba56c8-73ec-11df-a475-002264764cea'
+FULL_FAST_ULT: Text = 'daba56c8-73ec-11df-a475-002264764cea'
+FULL_DEEP: Text = '708f25c4-7489-11df-8094-002264764cea'
+FULL_DEEP_ULT: Text = '74db13d6-7489-11df-91b9-002264764cea'
 
 
 def create_arg_parser() -> argparse:
@@ -38,8 +36,9 @@ def create_arg_parser() -> argparse:
     """
     example = "python3 %(prog)s -t 127.0.0.1"
 
-    my_parser = argparse.ArgumentParser(description='%(prog)s a is a script for managing openvas using the console',
-                                        usage='{}'.format(example))
+    my_parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        description='%(prog)s a is a script for managing openvas using the console',
+        usage='{}'.format(example))
 
     openvas_group = my_parser.add_argument_group('openvas arguments')
     openvas_group.add_argument('--host', default='127.0.0.1', help='IP address where the OpenVas service is located.')
@@ -67,19 +66,20 @@ def create_arg_parser() -> argparse:
 class OpenVas:
     hostname: IP
     user: Text
-    password: Text  # = '9007806f-da0b-44fd-8c9d-4cdd940ce183'
+    password: Text
     REGEX_ID = r'id=\"(.*)\"'
     file_log: Path = Path('./scans.log')
     export: Dict[Text, Text] = field(default_factory=dict)
+    gmp: Gmp = None
 
     def __post_init__(self: OpenVas) -> NoReturn:
         connection: TLSConnection = TLSConnection(hostname=self.hostname.get_addr(), timeout=5)
-        self.gmp: Gmp = Gmp(connection)
+        self.gmp = Gmp(connection)
         try:
             response: Text = self.gmp.authenticate(self.user, self.password)
             soup: BeautifulSoup = BeautifulSoup(response, 'xml')
             if int(soup.authenticate_response['status']) != 200:
-                # print(soup.authenticate_response.attrs)
+                # logger.debug(soup.authenticate_response.attrs)
                 self.print_and_exit(soup.authenticate_response['status_text'])
         except OSError:
             self.print_and_exit(f"Timeout connect Openvas {self.hostname.get_addr()}")
@@ -138,8 +138,8 @@ class OpenVas:
         response: Text = self.gmp.create_target(name=name, hosts=[ip_address], port_range=ports)
         return self._get_id(response)
 
-    def _create_task(self: OpenVas, name: Text, target_id: Text, scan_config_id: Text, scanner_id: Text) -> Optional[
-        Text]:
+    def _create_task(self: OpenVas, name: Text, target_id: Text, scan_config_id: Text, scanner_id: Text) -> \
+            Optional[Text]:
         """
         Metodo para crear una tarea para un target proporcionado y con una serie de configuraciones
         :param target_id:
@@ -171,7 +171,7 @@ class OpenVas:
     def _get_id(response: Text) -> Optional[Text]:
         logger.debug('response: ' + response)
         soup: BeautifulSoup = BeautifulSoup(response, 'xml')
-        # print(soup.contents[0].attrs)
+        # logger.debug(soup.contents[0].attrs)
         # como solo hay un elemento en el xml se obtiene y se accede al atributo id
         return soup.contents[0]['id']
 
@@ -179,27 +179,25 @@ class OpenVas:
         #    return re.search(self.REGEX_ID, response).group(1)
         # return None
 
-    def report(self: OpenVas, report_id, report_type: Text) -> NoReturn:
+    def report(self: OpenVas, report_id, report_type: Text) -> Path:
         report_type = report_type.upper()
-        if not report_type in self.export.keys():
-            logger.critical(f"Format {report_type.lower()} is not compatible, use: PDF, HTML, XML or LATEX")
+        if report_type not in self.export.keys():
+            logger.critical(f"Format {report_type} is not compatible, use: PDF, HTML, XML or LATEX")
             sys.exit(1)
 
-        self.report_aux(report_id, report_type, report_type.lower())
-        # if report_type == 'PDF':
-        #    self.report_aux(report_id, report_type, 'pdf')
-        # elif report_type == 'XML':
-        #    self.report_aux(report_id, report_type, 'xml')
-        # elif report_type == 'HTML':
-        #    self.report_aux(report_id, report_type, 'html')
-        # elif report_type == 'LATEX':
-        #    self.report_aux(report_id, report_type, 'tex')
+        if report_type == 'LATEX':
+            return self.report_aux(report_id, report_type, 'tex')
+        else:
+            return self.report_aux(report_id, report_type, report_type)
 
-    def report_aux(self: OpenVas, report_id: Text, param_type: Text, extension: Text) -> NoReturn:
+    def report_aux(self: OpenVas, report_id: Text, param_type: Text, extension: Text) -> Path:
+        logger.info(report_id)
+        logger.info(param_type)
+        logger.info(extension)
         response = self.gmp.get_report(report_id=report_id, report_format_id=self.export[param_type])
         response_xml = etree.fromstring(response)  # conversion de objeto str a xml
         if not self.is_response_valid(response_xml):
-            return
+            raise ValueError('Could not process XML')
 
         # uso regex porque es mas facil que trabajar con el xml
         # regex que obtiene el reporte en texto plano para convertirlo al formato deseado
@@ -212,15 +210,13 @@ class OpenVas:
         # regex = rf'<report_format id=\"(.*)\"><name>{param_type}</name></report_format>(.*)</report>'
         # re.S es necesario para el formato xml ya que tiene saltos de linea
         # content: Text = re.search(regex, response, re.IGNORECASE | re.S).group(2)
-        if extension == 'latex':
-            extension = 'tex'
-        pdf_path = Path(f'{report_id}.{extension}').expanduser()
+        pdf_path = Path(f'{report_id}.{extension.lower()}').expanduser()
 
         if param_type == "XML":
             # Se guarda como texto en vez de binario
             pdf_path.write_text(content)
-            print(f"Done. {param_type} created: {pdf_path}")
-            return
+            logger.debug(f"Done. {param_type} created: {pdf_path}")
+            return pdf_path
 
         # convert content to 8-bit ASCII bytes
         binary_base64_encoded_pdf = content.encode('ascii')
@@ -229,8 +225,8 @@ class OpenVas:
         # write to file and support ~ in filename path
         pdf_path.write_bytes(binary_pdf)
 
-        print(f'Done. {param_type} created: {pdf_path}')
-        # print(response)
+        logger.debug(f'Done. {param_type} created: {pdf_path}')
+        return pdf_path
 
     @staticmethod
     def is_response_valid(response) -> bool:
@@ -245,11 +241,12 @@ class OpenVas:
         logger.critical(response.get("status_text"))
         return False
 
-    def list_tasks(self) -> Text:
+    def list_tasks(self) -> Dict[Text, Tuple[Text, int, float]]:
         response = self.gmp.get_tasks()
         response_xml = etree.fromstring(response)
 
-        print("List of reports")
+        message: Dict[Text, Tuple[Text, int, float]] = dict()
+        logger.debug("List of reports")
         for task in response_xml.xpath('task'):
             id_report: Text = str()
             last_report = task.find("last_report/report")
@@ -272,9 +269,10 @@ class OpenVas:
             else:
                 severity = -1
 
-            message: Text = f'id: {id_report}, name: {name}, progress: {progress}%, severity: {severity}'
-            print(message)
-            return  message
+            logger.debug(f'id: {id_report}, name: {name}, progress: {progress}%, severity: {severity}')
+            message[id_report] = (name, progress, severity)
+
+        return message
 
     @staticmethod
     def print_and_exit(message: Text, code: int = 1) -> NoReturn:

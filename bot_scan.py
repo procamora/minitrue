@@ -28,14 +28,14 @@ start - Start the bot
 """
 
 import configparser
+import ipaddress
 import re
 import subprocess
 import sys
 import threading
 import time
-from ipaddress import IPv4Interface, IPv6Interface
 from pathlib import Path
-from typing import NoReturn, Tuple, List, Union, Text, Dict
+from typing import NoReturn, Tuple, List, Text, Dict, Any
 
 from procamora_utils.ip import IP
 from requests import exceptions
@@ -47,7 +47,7 @@ from terminaltables import AsciiTable
 from generate_pdf import latex_to_pdf, generate_latex
 from host import Host
 from implement_sqlite import select_all_hosts, select_hosts_online, select_hosts_offline, check_database
-from openvas import OpenVas
+from openvas import OpenVas, FULL_FAST
 from scan_nmap import ScanNmap, logger
 
 
@@ -94,6 +94,8 @@ if bool(int(config_basic.get('DEBUG'))):
 else:
     bot: TeleBot = TeleBot(config_basic.get('BOT_TOKEN'))
 
+owner_bot: int = int(config_basic.get('ADMIN'))
+
 
 def get_markup_cmd() -> types.ReplyKeyboardMarkup:
     markup: types.ReplyKeyboardMarkup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -113,29 +115,37 @@ def get_markup_new_host(host: Host):
 
 def daemon_tcp_scan(ip: Text, message: types.Message):
     sn: ScanNmap = ScanNmap()
-    ports = sn.tcp_scan(IPv4Interface(ip))
+    ports, lport = sn.tcp_scan(ipaddress.ip_interface(ip))
     bot.reply_to(message, ports, reply_markup=get_markup_cmd())
 
 
 def daemon_openvas_scan(target: Text, message: types.Message):
+    # get open ports
+    sn: ScanNmap = ScanNmap()
+    ports, lport = sn.tcp_scan(ipaddress.ip_interface(target))
+    ports_str: Text = ",".join(map(str, lport))
+
     ov: configparser.SectionProxy = config["OPENVAS"]
     openvas: OpenVas = OpenVas(IP(ip=ov.get('IP')), ov.get('USER'), ov.get('PASSWD'))
-    report_id: Text = openvas.analize_ip(IP(ip=target), '74db13d6-7489-11df-91b9-002264764cea', 'T: 22')
-    bot.reply_to(message, 'solo esceneo el puerto 22, lanzar nmpa para saber que puertos escanear',
+    # scan open ports
+    report_id: Text = openvas.analize_ip(IP(ip=target), FULL_FAST, f'T: {ports_str}')
+    bot.reply_to(message, f'Scanning of openvas to IP {target} in process.\nPorts: {ports_str}',
                  reply_markup=get_markup_cmd())
-    regex: Text = rf'id: {report_id},.*severity: (.*)'
+
     stop: bool = False
-
     while not stop:
-        list_tasks = openvas.list_tasks()
-        res = re.search(regex, list_tasks)
-        if res and int(res.group(1)) != -1:
+        list_tasks: Dict[Text, Tuple[Text, int, float]] = openvas.list_tasks()
+        if report_id in list_tasks.keys() and list_tasks[report_id][1] == 100:
             stop = True
-        time.sleep(10)
+        else:
+            bot.send_message(message.chat.id,
+                             f'Scanning of openvas to IP {target}. in process.\nThis scan is very slow...',
+                             reply_markup=get_markup_cmd())
+        time.sleep(240)
 
-    openvas.report(report_id, 'html')
-    file_data = open(f'{report_id}.html', 'rb')
-    bot.send_document(message, file_data, reply_markup=get_markup_cmd())
+    file: Path = openvas.report(k, 'pdf')
+    file_data = open(str(file), 'rb')
+    bot.send_document(message.chat.id, file_data, reply_markup=get_markup_cmd())
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -181,15 +191,16 @@ def command_system(message) -> NoReturn:
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['exit'])
 def send_exit(message) -> NoReturn:
-    pass
+    bot.send_message(message.chat.id, "Nothing", reply_markup=get_markup_cmd())
+    return
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['scan'])
 def send_scan(message) -> NoReturn:
     bot.reply_to(message, 'Starting the network scan')
     # TODO THREAD AND subnet dynamic
-    list_networks: List[Union[IPv4Interface, IPv6Interface]] = list()
-    list_networks.append(IPv4Interface('192.168.1.0/24'))
+    list_networks: List[ipaddress.ip_interface] = list()
+    list_networks.append(ipaddress.ip_interface('192.168.1.0/24'))
     sn: ScanNmap = ScanNmap(list_networks)
     new_hosts: List[Host] = sn.run()
     if len(new_hosts) > 0:
@@ -201,7 +212,7 @@ def send_scan(message) -> NoReturn:
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['online'])
 def send_online(message) -> NoReturn:
-    response: List[List[Text]] = select_hosts_online()
+    response: List[Tuple[Text, Any]] = select_hosts_online()
     update = list([['IP', 'vendor']])
     for i in response:
         update.append(i)
@@ -212,7 +223,7 @@ def send_online(message) -> NoReturn:
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['offline'])
 def send_offline(message) -> NoReturn:
-    response: List[List[Text]] = select_hosts_offline()
+    response: List[Tuple[Text, Any]] = select_hosts_offline()
     update = list([['IP', 'vendor']])
     for i in response:
         update.append(i)
@@ -223,7 +234,7 @@ def send_offline(message) -> NoReturn:
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['pdf'])
 def send_pdf(message) -> NoReturn:
-    def daemon_generate_pdf(message: types.Message):
+    def daemon_generate_pdf(msg: types.Message):
         all_hosts: Dict[Text, Host] = select_all_hosts()
 
         cmd_interfaces: Text = 'ip address show'
@@ -238,12 +249,12 @@ def send_pdf(message) -> NoReturn:
 
         if execute.returncode == 0:
             # IMPORTANTE para que el dicumento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
-            bot.send_document(message.chat.id, file, reply_markup=get_markup_cmd(), )
+            bot.send_document(msg.chat.id, file, reply_markup=get_markup_cmd(), )
         else:  # Si la salida del comando excede el limite de mensaje de Telegram se trunca
             new_msg = execute.stdout.decode('utf-8')
             if len(new_msg) > 4096:
                 new_msg = f'{execute.stdout.decode("utf-8")[0:4050]}\n.................\nTruncated message'
-            bot.reply_to(message, new_msg, reply_markup=get_markup_cmd())
+            bot.reply_to(msg, new_msg, reply_markup=get_markup_cmd())
         return
 
     d = threading.Thread(target=daemon_generate_pdf, name='generate_pdf', args=(message,))
@@ -307,8 +318,8 @@ def daemon_scan_network() -> NoReturn:
     :return:
     """
     check_database()
-    list_networks: List[Union[IPv4Interface, IPv6Interface]] = list()
-    list_networks.append(IPv4Interface('192.168.1.0/24'))
+    list_networks: List[ipaddress.ip_interface] = list()
+    list_networks.append(ipaddress.ip_interface('192.168.1.0/24'))
     sn: ScanNmap = ScanNmap(list_networks)
     delay: int = int(config_basic.get('DELAY'))
 
@@ -329,17 +340,21 @@ def daemon_scan_network() -> NoReturn:
         time.sleep(delay)
 
 
-d = threading.Thread(target=daemon_scan_network, name='scan_network')
-d.setDaemon(True)
-d.start()
+def main():
+    d = threading.Thread(target=daemon_scan_network, name='scan_network')
+    d.setDaemon(True)
+    d.start()
 
-owner_bot: int = int(config_basic.get('ADMIN'))
-try:
-    bot.send_message(owner_bot, "Starting bot", reply_markup=get_markup_cmd(), disable_notification=True)
-    logger.info('Starting bot')
-except (apihelper.ApiException, exceptions.ReadTimeout) as e:
-    logger.critical(f'Error in init bot: {e}')
-    sys.exit(1)
+    try:
+        bot.send_message(owner_bot, "Starting bot", reply_markup=get_markup_cmd(), disable_notification=True)
+        logger.info('Starting bot')
+    except (apihelper.ApiException, exceptions.ReadTimeout) as e:
+        logger.critical(f'Error in init bot: {e}')
+        sys.exit(1)
 
-# Con esto, le decimos al bot que siga funcionando incluso si encuentra algun fallo.
-bot.infinity_polling(none_stop=True)
+    # Con esto, le decimos al bot que siga funcionando incluso si encuentra algun fallo.
+    bot.infinity_polling(none_stop=True)
+
+
+if __name__ == "__main__":
+    main()
