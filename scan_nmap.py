@@ -7,7 +7,7 @@ import ipaddress
 import logging
 import subprocess
 import sys
-from typing import List, Tuple, Union, Dict, Text, NoReturn
+from typing import List, Tuple, Dict, Text, NoReturn
 
 import netifaces
 import nmap
@@ -16,7 +16,7 @@ from procamora_utils.logger import get_logging
 from procamora_utils.ping import ping
 
 from host import Host
-from implement_sqlite import select_all_hosts, insert_host, update_host, update_host_offline
+from implement_sqlite import select_all_hosts, insert_host, update_date
 from mac_vendor_lookup_sync import MacLookup
 
 logger: logging = get_logging(False, 'scan_nmap')
@@ -29,22 +29,23 @@ class ScanNmap:
 
         self.local_interfaces: Dict[Text, Text] = dict()
         self.subnets: List[ipaddress.ip_interface] = list()
-        self.hosts_db: Dict[Text, Host] = dict()
+        self.db_mac_hosts: Tuple[Text] = tuple()
         self.vendor = MacLookup()
         self.vendor.load_vendors()
 
-        self.set_local_interfaces()
+        self._set_local_interfaces()
         if subnets is None or len(subnets) == 0:  # Si añado las interfaces manualmente, no las busco
-            self.set_ip_interfaces()
+            self._set_ip_interfaces()
         else:
             self.subnets = subnets
         self.update_db()
         logger.info(self.subnets)
 
     def update_db(self: ScanNmap) -> NoReturn:
-        self.hosts_db = select_all_hosts()
+        self.db_mac_hosts = select_all_hosts()
+        logger.debug(self.db_mac_hosts)
 
-    def set_local_interfaces(self: ScanNmap) -> NoReturn:
+    def _set_local_interfaces(self: ScanNmap) -> NoReturn:
         """
         Metodo para obtener todas las interfaces del sistema que tienen asignada una direccion IP y enlazarla con su MAC
         en un diccionario
@@ -55,7 +56,7 @@ class ScanNmap:
             if netifaces.AF_INET in addrs and netifaces.AF_LINK in addrs:
                 self.local_interfaces[addrs[netifaces.AF_INET][0]['addr']] = addrs[netifaces.AF_LINK][0]['addr']
 
-    def set_ip_interfaces(self: ScanNmap):
+    def _set_ip_interfaces(self: ScanNmap):
         """
         Metodo para obtener las IP con las subred, uso este metodo en vez de utilizar el anterior por comodida, ya que
         de esta forma se obtiene la mascara en formato valido para pasarselo a nmap
@@ -73,7 +74,7 @@ class ScanNmap:
                 subnet = ipaddress.ip_interface(interface)
                 self.subnets.append(subnet)
 
-    def get_mac_aux(self: ScanNmap, ip: Text) -> Text:
+    def _get_mac_aux(self: ScanNmap, ip: Text) -> Text:
         """
         Metodo para obtener del sistema la MAC asociada a una IP
         :param ip:
@@ -89,7 +90,7 @@ class ScanNmap:
             logger.error(f'{ip} -> {stderr}')
         return stdout.strip().split(' ')[4]
 
-    def ping_scan(self: ScanNmap, subnet: Union[ipaddress.IPv4Interface, ipaddress.IPv6Interface]) -> List[Host]:
+    def ping_subnet_scan(self: ScanNmap, subnet: ipaddress.ip_interface) -> List[Host]:
         """
         Metodo encargado de realizar el escaneo de una subred, retorna todos los hosts que encuentra
         :param subnet:
@@ -106,7 +107,7 @@ class ScanNmap:
             ip = t["addresses"]["ipv4"]
 
             if 'mac' not in t["addresses"]:
-                mac = self.get_mac_aux(ip)
+                mac = self._get_mac_aux(ip)
             else:
                 mac = t["addresses"]["mac"]
 
@@ -116,13 +117,13 @@ class ScanNmap:
             else:
                 vend = t["vendor"]
 
-            host: Host = Host(ip, mac, True, vend, scan["nmap"]["scanstats"]["timestr"], subnet.network)
+            host: Host = Host(ip, mac, vend, scan["nmap"]["scanstats"]["timestr"], subnet.network)
             logger.debug(f'detect: {host}')
             hosts.append(host)
 
         return hosts
 
-    def tcp_scan(self: ScanNmap, param_ip: ipaddress.ip_interface) -> Tuple[Text, List[int]]:
+    def tcp_ip_scan(self: ScanNmap, param_ip: ipaddress.ip_interface) -> Tuple[Text, List[int]]:
         """
         Metodo encargado de realizar el escaneo a un host buscando servicios activos
         :param param_ip:
@@ -143,7 +144,7 @@ class ScanNmap:
             ports += f'{port} ({service["name"]}): {service["product"]} (v{service["version"]})\n'
         return ports, list_ports
 
-    def update_or_insert_host(self: ScanNmap, hosts: List[Host]) -> List[Host]:
+    def _insert_host(self: ScanNmap, hosts: List[Host]) -> List[Host]:
         """
         Metodo que se encarga de meter en la base de datos los host que se han encontrado en la red. Si ya esta en la
         bd actualiza la informacion y si no esta lo inserta. Retorna la lista de host que ha insertado en la bd
@@ -152,14 +153,14 @@ class ScanNmap:
         """
         host: Host
         response_host: List[Host] = list()
+
+        if len(hosts) > 0:  # always update date scan
+            update_date(hosts[0].date)
+
         for host in hosts:
-            if host.ip in self.hosts_db.keys():
-                # logger.debug(f'update {host}')
-                # solo actuliza la hora del escaneo a cada host
-                update_host(host)
-            else:
+            insert_host(host)
+            if host.mac not in self.db_mac_hosts:
                 logger.warning(f'new host: {host}')
-                insert_host(host)
                 response_host.append(host)
         return response_host
 
@@ -179,14 +180,14 @@ class ScanNmap:
             # Si ponemos IP valida (x.x.x.x/x) en vez de subred  ej: (x.x.x.0/x), comprobamos que la IP esta online
             # sino lo esta se omite, para evitar fallos de escritura y que  pierda tiempo escaneando la red
             if str(subnet) != str(subnet.network):
-                logger.info(f'Scanning: {ping(IP(ip=str(subnet.ip)))}')
                 valid = ping(IP(ip=str(subnet.ip)))
+                logger.info(f'Scanning: {valid}')
 
             if valid:
-                hosts: List[Host] = self.ping_scan(subnet)
+                hosts: List[Host] = self.ping_subnet_scan(subnet)
                 logger.debug(f'------> {hosts}')
-                response_host += self.update_or_insert_host(hosts)
-                update_host_offline(hosts[0].date, hosts[0].network)
+                response_host += self._insert_host(hosts)
+                # update_host_offline(hosts[0].date, hosts[0].network)
             else:
                 logger.warning(f'{subnet} is skiped')
         return response_host

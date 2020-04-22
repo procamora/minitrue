@@ -65,7 +65,7 @@ BOT_TOKEN = 1069111113:AAHOk9K5TAAAAAAAAAAIY1OgA_LNpAAAAA
 [OPENVAS]
 IP = 192.168.1.71
 USER = admin
-PASSWD = asas
+PASSWD = admin
 '''
 
 
@@ -115,14 +115,14 @@ def get_markup_new_host(host: Host):
 
 def daemon_tcp_scan(ip: Text, message: types.Message):
     sn: ScanNmap = ScanNmap()
-    ports, lport = sn.tcp_scan(ipaddress.ip_interface(ip))
+    ports, lport = sn.tcp_ip_scan(ipaddress.ip_interface(ip))
     bot.reply_to(message, ports, reply_markup=get_markup_cmd())
 
 
 def daemon_openvas_scan(target: Text, message: types.Message):
     # get open ports
     sn: ScanNmap = ScanNmap()
-    ports, lport = sn.tcp_scan(ipaddress.ip_interface(target))
+    ports, lport = sn.tcp_ip_scan(ipaddress.ip_interface(target))
     ports_str: Text = ",".join(map(str, lport))
 
     ov: configparser.SectionProxy = config["OPENVAS"]
