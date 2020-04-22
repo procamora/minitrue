@@ -143,7 +143,7 @@ def daemon_openvas_scan(target: Text, message: types.Message):
                              reply_markup=get_markup_cmd())
         time.sleep(240)
 
-    file: Path = openvas.report(k, 'pdf')
+    file: Path = openvas.report(report_id, 'pdf', Path('/tmp/'))
     file_data = open(str(file), 'rb')
     bot.send_document(message.chat.id, file_data, reply_markup=get_markup_cmd())
 

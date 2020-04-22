@@ -179,21 +179,18 @@ class OpenVas:
         #    return re.search(self.REGEX_ID, response).group(1)
         # return None
 
-    def report(self: OpenVas, report_id, report_type: Text) -> Path:
+    def report(self: OpenVas, report_id, report_type: Text, directory: Path = Path('./')) -> Path:
         report_type = report_type.upper()
         if report_type not in self.export.keys():
             logger.critical(f"Format {report_type} is not compatible, use: PDF, HTML, XML or LATEX")
             sys.exit(1)
 
         if report_type == 'LATEX':
-            return self.report_aux(report_id, report_type, 'tex')
+            return self.report_aux(report_id, report_type, 'tex', directory)
         else:
-            return self.report_aux(report_id, report_type, report_type)
+            return self.report_aux(report_id, report_type, report_type, directory)
 
-    def report_aux(self: OpenVas, report_id: Text, param_type: Text, extension: Text) -> Path:
-        logger.info(report_id)
-        logger.info(param_type)
-        logger.info(extension)
+    def report_aux(self: OpenVas, report_id: Text, param_type: Text, extension: Text, directory: Path) -> Path:
         response = self.gmp.get_report(report_id=report_id, report_format_id=self.export[param_type])
         response_xml = etree.fromstring(response)  # conversion de objeto str a xml
         if not self.is_response_valid(response_xml):
@@ -210,7 +207,7 @@ class OpenVas:
         # regex = rf'<report_format id=\"(.*)\"><name>{param_type}</name></report_format>(.*)</report>'
         # re.S es necesario para el formato xml ya que tiene saltos de linea
         # content: Text = re.search(regex, response, re.IGNORECASE | re.S).group(2)
-        pdf_path = Path(f'{report_id}.{extension.lower()}').expanduser()
+        pdf_path = Path(directory, f'{report_id}.{extension.lower()}').expanduser()
 
         if param_type == "XML":
             # Se guarda como texto en vez de binario
