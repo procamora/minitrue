@@ -7,6 +7,9 @@
 
 """commands
 Name:
+Automatic Scan Network
+
+Username:
 procamora_scan_bot
 
 Description:
@@ -29,15 +32,17 @@ start - Start the bot
 
 import configparser
 import ipaddress
+import logging
 import re
 import subprocess
 import sys
 import threading
 import time
 from pathlib import Path
-from typing import NoReturn, Tuple, List, Text, Dict, Any
+from typing import NoReturn, Tuple, List, Text, Dict
 
 from procamora_utils.ip import IP
+from procamora_utils.logger import get_logging
 from requests import exceptions
 # Importamos la librería Y los tipos especiales de esta
 from telebot import TeleBot, types, apihelper
@@ -48,7 +53,9 @@ from generate_pdf import latex_to_pdf, generate_latex
 from host import Host
 from implement_sqlite import select_all_hosts, select_hosts_online, select_hosts_offline, check_database
 from openvas import OpenVas, FULL_FAST
-from scan_nmap import ScanNmap, logger
+from scan_nmap import ScanNmap
+
+logger: logging = get_logging(False, 'bot_scan')
 
 
 def get_basic_file_config():
@@ -69,12 +76,12 @@ PASSWD = admin
 '''
 
 
-my_commands: Tuple = (
+my_commands: Tuple[Text, ...] = (
     '/scan',  # 0
     '/online',  # 1
     '/offline',  # 2
     '/pdf',  # 3
-    '/exit',  # 4
+    '/exit',  # -1
 )
 
 FILE_CONFIG: Path = Path(Path(__file__).resolve().parent, "settings.ini")
@@ -166,32 +173,31 @@ def callback_query(call: types.CallbackQuery):
 # Handle always first "/start" message when new chat with your bot is created
 @bot.message_handler(commands=["start"])
 def command_start(message) -> NoReturn:
-    bot.send_message(message.chat.id, f"Bienvenido al bot\nTu id es: {message.chat.id}")
+    bot.send_message(message.chat.id, f"Welcome to the bot\nYour id is: {message.chat.id}",
+                     reply_markup=get_markup_cmd())
     command_system(message)
     return  # solo esta puesto para que no falle la inspeccion de codigo
 
 
 @bot.message_handler(commands=["help"])
 def command_help(message) -> NoReturn:
-    bot.send_message(message.chat.id, "Aqui pondre todas las opciones")
+    bot.send_message(message.chat.id, "Here I will put all the options")
     markup = types.InlineKeyboardMarkup()
     itembtna = types.InlineKeyboardButton('Github', url="https://github.com/procamora/bot_scan_networks")
     markup.row(itembtna)
-    bot.send_message(message.chat.id, "Aqui pondre todas las opciones", reply_markup=markup)
+    bot.send_message(message.chat.id, "Here I will put all the options", reply_markup=markup)
     return  # solo esta puesto para que no falle la inspeccion de codigo
 
 
 @bot.message_handler(commands=["system"])
 def command_system(message) -> NoReturn:
-    bot.send_message(message.chat.id, "Lista de comandos disponibles")
-
-    bot.send_message(message.chat.id, "Escoge una opcion: ", reply_markup=get_markup_cmd())
+    bot.send_message(message.chat.id, "List of available commands\nChoose an option: ", reply_markup=get_markup_cmd())
     return  # solo esta puesto para que no falle la inspeccion de codigo
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['exit'])
 def send_exit(message) -> NoReturn:
-    bot.send_message(message.chat.id, "Nothing", reply_markup=get_markup_cmd())
+    bot.send_message(message, "Nothing", reply_markup=get_markup_cmd())
     return
 
 
@@ -212,7 +218,7 @@ def send_scan(message) -> NoReturn:
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['online'])
 def send_online(message) -> NoReturn:
-    response: List[Tuple[Text, Any]] = select_hosts_online()
+    response: List[Tuple[Text, ...]] = select_hosts_online()
     update = list([['IP', 'vendor']])
     for i in response:
         update.append(i)
@@ -223,7 +229,7 @@ def send_online(message) -> NoReturn:
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['offline'])
 def send_offline(message) -> NoReturn:
-    response: List[Tuple[Text, Any]] = select_hosts_offline()
+    response: List[Tuple[Text, ...]] = select_hosts_offline()
     update = list([['IP', 'vendor']])
     for i in response:
         update.append(i)
@@ -235,7 +241,7 @@ def send_offline(message) -> NoReturn:
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['pdf'])
 def send_pdf(message) -> NoReturn:
     def daemon_generate_pdf(msg: types.Message):
-        all_hosts: Dict[Text, Host] = select_all_hosts()
+        all_hosts: List[Tuple[Text, ...]] = select_all_hosts()
 
         cmd_interfaces: Text = 'ip address show'
         stdout_interfaces, stderr, ex = execute_command(cmd_interfaces)
@@ -244,6 +250,8 @@ def send_pdf(message) -> NoReturn:
         cmd_routes: Text = 'ip route list'
         stdout_routes, stderr, ex = execute_command(cmd_routes)
 
+        logger.critical('chage generate latex, type all_host change')
+        sys.exit(60)
         string_latex = generate_latex(all_hosts, stdout_interfaces, stdout_arp, stdout_routes)
         execute, file = latex_to_pdf(string_latex)
 
@@ -272,8 +280,8 @@ def text_not_valid(message) -> NoReturn:
 
 @bot.message_handler(regexp=".*")
 def handle_resto(message) -> NoReturn:
-    texto: Text = 'No tienes permiso para ejecutar esta accion, eso se debe a que no eres yo.\n' \
-                  'Por lo que ya sabes, desaparece -.-'
+    texto: Text = "You're not allowed to perform this action, that's because you're not me.\n" \
+                  'As far as you know, it disappears -.-'
     bot.reply_to(message, texto, reply_markup=get_markup_cmd())
     return  # solo esta puesto para que no falle la inspeccion de codigo
 

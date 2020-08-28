@@ -16,7 +16,12 @@ bot telegram:
 
 ![tg][tg]
 
-[tg]: resources/images/tg.png
+
+
+
+[tg]: resources/images/tg.png 
+
+
 
 # Installation
 

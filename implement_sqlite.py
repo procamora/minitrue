@@ -82,7 +82,7 @@ def update_host(host: Host) -> NoReturn:
 # conection_sqlite(DB, query)
 
 
-def check_database():
+def check_database() -> NoReturn:
     """
     Comprueba si existe la base de datos, sino existe la crea
     :return:
@@ -93,3 +93,4 @@ def check_database():
     except OSError:
         logger.info(f'the database {DB} doesn\'t exist, creating it with the default configuration')
         execute_script_sqlite(DB, DB_STRUCTURE.read_text())
+
