@@ -234,7 +234,11 @@ def send_offline(message) -> NoReturn:
     for i in response:
         update.append(i)
     table: AsciiTable = AsciiTable(update)
-    bot.reply_to(message, str(table.table), reply_markup=get_markup_cmd())
+    if len(str(table.table)) > 4096:
+        new_msg = f'{str(table.table)[0:4050]}\n.................\nTruncated message'
+        bot.reply_to(message, new_msg, reply_markup=get_markup_cmd())
+    else:
+        bot.reply_to(message, str(table.table), reply_markup=get_markup_cmd())
     return
 
 

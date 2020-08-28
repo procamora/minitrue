@@ -16,7 +16,7 @@ from procamora_utils.logger import get_logging
 from procamora_utils.ping import ping
 
 from host import Host
-from implement_sqlite import select_all_hosts, insert_host, update_date
+from implement_sqlite import select_all_hosts, insert_host, update_date, check_database
 from mac_vendor_lookup_sync import MacLookup
 
 logger: logging = get_logging(False, 'scan_nmap')
@@ -218,6 +218,7 @@ class ScanNmap:
 
 
 def main(args: List[Text]):
+    check_database()
     list_networks: List[ipaddress.ip_interface] = list(map(lambda ip: ipaddress.ip_interface(ip), args))
     # mismo metodo pero mas legible :)
     # list_networks: List[ipaddress.ip_interface] = list()
@@ -231,3 +232,4 @@ def main(args: List[Text]):
 if __name__ == '__main__':
     # El [0] es el nombre del fichero
     main(sys.argv[1:])
+

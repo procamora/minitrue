@@ -21,6 +21,8 @@ pyTelegramBotAPI
 # Generacion de PDF
 fpdf
 
+# OpenVas
+python-gvm
 
 # Tabla ascii para enviar por tg
 terminaltables
