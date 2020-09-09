@@ -8,7 +8,7 @@ import logging
 import subprocess
 import sys
 from typing import List, Tuple, Dict, Text, NoReturn
-
+from threading import Lock
 import netifaces
 import nmap
 from procamora_utils.ip import IP
@@ -16,16 +16,17 @@ from procamora_utils.logger import get_logging
 from procamora_utils.ping import ping
 
 from host import Host
-from implement_sqlite import select_all_hosts, insert_host, update_date, check_database
+from implement_sqlite import select_mac_all_hosts, insert_host, update_date, check_database
 from mac_vendor_lookup_sync import MacLookup
 
 logger: logging = get_logging(False, 'scan_nmap')
 
 
 class ScanNmap:
-    def __init__(self: ScanNmap, subnets: ipaddress.ip_interface = None) -> NoReturn:
+    def __init__(self: ScanNmap, subnets: ipaddress.ip_interface = None, lock: Lock = None) -> NoReturn:
         self.nmap_tcp_scan: Text = '--top-ports 1000 --open -T5 -sV -v -n'
         self.nmap_ping_scan: Text = '-n -sP'
+        self.lock: Lock = lock
 
         self.local_interfaces: Dict[Text, Text] = dict()
         self.subnets: List[ipaddress.ip_interface] = list()
@@ -42,7 +43,7 @@ class ScanNmap:
         logger.info(self.subnets)
 
     def update_db(self: ScanNmap) -> NoReturn:
-        self.db_mac_hosts = select_all_hosts()
+        self.db_mac_hosts = select_mac_all_hosts(self.lock)
         logger.debug(self.db_mac_hosts)
 
     def _set_local_interfaces(self: ScanNmap) -> NoReturn:
@@ -115,7 +116,7 @@ class ScanNmap:
                 # desc = MacLookup().lookup(mac)
                 try:
                     vend = self.vendor.lookup(mac)
-                except:
+                except Exception:
                     vend = '-'
             else:
                 vend = t["vendor"]
@@ -158,10 +159,10 @@ class ScanNmap:
         response_host: List[Host] = list()
 
         if len(hosts) > 0:  # always update date scan
-            update_date(hosts[0].date)
+            update_date(hosts[0].date, self.lock)
 
         for host in hosts:
-            insert_host(host)
+            insert_host(host, self.lock)
             if host.mac not in self.db_mac_hosts:
                 logger.warning(f'new host: {host}')
                 response_host.append(host)
@@ -235,4 +236,3 @@ def main(args: List[Text]):
 if __name__ == '__main__':
     # El [0] es el nombre del fichero
     main(sys.argv[1:])
-

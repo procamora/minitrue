@@ -46,9 +46,9 @@ class SyncMacLookup(BaseMacLookup):
         response: requests.models.Response = requests.get(url)
         f: _io.BufferedWriter
         with open(str(SyncMacLookup.cache_path), mode='wb') as f:
-            l: Text
-            for l in response.text.split('\n'):
-                line = l.encode()  # conversion a bytes
+            li: Text
+            for li in response.text.split('\n'):
+                line = li.encode()  # conversion a bytes
                 if b"(base 16)" in line:
                     prefix: bytes
                     vendor: bytes
@@ -67,8 +67,8 @@ class SyncMacLookup(BaseMacLookup):
             with open(str(SyncMacLookup.cache_path), mode='rb') as f:
                 # Loading the entire file into memory, then splitting is
                 # actually faster than streaming each line. (> 1000x)
-                for l in (f.read()).splitlines():
-                    prefix, vendor = l.split(b":", 1)
+                for li in (f.read()).splitlines():
+                    prefix, vendor = li.split(b":", 1)
                     self.prefixes[prefix] = vendor
         logger.debug(f"Vendor list successfully loaded: {len(self.prefixes)} entries")
 

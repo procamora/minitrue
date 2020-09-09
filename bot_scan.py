@@ -39,6 +39,7 @@ import sys
 import threading
 import time
 from pathlib import Path
+from threading import Lock
 from typing import NoReturn, Tuple, List, Text, Dict
 
 from procamora_utils.ip import IP
@@ -51,7 +52,7 @@ from terminaltables import AsciiTable
 
 from generate_pdf import latex_to_pdf, generate_latex
 from host import Host
-from implement_sqlite import select_all_hosts, select_hosts_online, select_hosts_offline, check_database
+from implement_sqlite import select_hosts_online, select_hosts_offline, check_database
 from openvas import OpenVas, FULL_FAST
 from scan_nmap import ScanNmap
 
@@ -102,6 +103,8 @@ else:
     bot: TeleBot = TeleBot(config_basic.get('BOT_TOKEN'))
 
 owner_bot: int = int(config_basic.get('ADMIN'))
+
+lock: Lock = Lock()
 
 
 def get_markup_cmd() -> types.ReplyKeyboardMarkup:
@@ -155,6 +158,14 @@ def daemon_openvas_scan(target: Text, message: types.Message):
     bot.send_document(message.chat.id, file_data, reply_markup=get_markup_cmd())
 
 
+def send_message_safe(message: types.Message, text: Text) -> NoReturn:
+    if len(text) > 4096:
+        new_msg = f'{str(text)[0:4050]}\n.................\nTruncated message'
+        bot.reply_to(message, new_msg, reply_markup=get_markup_cmd())
+    else:
+        bot.reply_to(message, text, reply_markup=get_markup_cmd())
+
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call: types.CallbackQuery):
     ip: Text = call.data.split('_')[1]
@@ -172,7 +183,7 @@ def callback_query(call: types.CallbackQuery):
 
 # Handle always first "/start" message when new chat with your bot is created
 @bot.message_handler(commands=["start"])
-def command_start(message) -> NoReturn:
+def command_start(message: types.Message) -> NoReturn:
     bot.send_message(message.chat.id, f"Welcome to the bot\nYour id is: {message.chat.id}",
                      reply_markup=get_markup_cmd())
     command_system(message)
@@ -180,7 +191,7 @@ def command_start(message) -> NoReturn:
 
 
 @bot.message_handler(commands=["help"])
-def command_help(message) -> NoReturn:
+def command_help(message: types.Message) -> NoReturn:
     bot.send_message(message.chat.id, "Here I will put all the options")
     markup = types.InlineKeyboardMarkup()
     itembtna = types.InlineKeyboardButton('Github', url="https://github.com/procamora/bot_scan_networks")
@@ -190,19 +201,19 @@ def command_help(message) -> NoReturn:
 
 
 @bot.message_handler(commands=["system"])
-def command_system(message) -> NoReturn:
+def command_system(message: types.Message) -> NoReturn:
     bot.send_message(message.chat.id, "List of available commands\nChoose an option: ", reply_markup=get_markup_cmd())
     return  # solo esta puesto para que no falle la inspeccion de codigo
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['exit'])
-def send_exit(message) -> NoReturn:
+def send_exit(message: types.Message) -> NoReturn:
     bot.send_message(message, "Nothing", reply_markup=get_markup_cmd())
     return
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['scan'])
-def send_scan(message) -> NoReturn:
+def send_scan(message: types.Message) -> NoReturn:
     bot.reply_to(message, 'Starting the network scan')
     # TODO THREAD AND subnet dynamic
     list_networks: List[ipaddress.ip_interface] = list()
@@ -217,36 +228,33 @@ def send_scan(message) -> NoReturn:
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['online'])
-def send_online(message) -> NoReturn:
-    response: List[Tuple[Text, ...]] = select_hosts_online()
+def send_online(message: types.Message) -> NoReturn:
+    response: List[Host] = select_hosts_online(lock)
     update = list([['IP', 'vendor']])
     for i in response:
-        update.append(i)
+        update.append((i.ip, i.vendor))
     table: AsciiTable = AsciiTable(update)
-    bot.reply_to(message, str(table.table), reply_markup=get_markup_cmd())
+    send_message_safe(message, str(table.table))
     return
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['offline'])
-def send_offline(message) -> NoReturn:
-    response: List[Tuple[Text, ...]] = select_hosts_offline()
+def send_offline(message: types.Message) -> NoReturn:
+    response: List[Host] = select_hosts_offline(lock)
     update = list([['IP', 'vendor']])
     for i in response:
-        update.append(i)
+        update.append((i.ip, i.vendor))
+
     table: AsciiTable = AsciiTable(update)
-    if len(str(table.table)) > 4096:
-        new_msg = f'{str(table.table)[0:4050]}\n.................\nTruncated message'
-        bot.reply_to(message, new_msg, reply_markup=get_markup_cmd())
-    else:
-        bot.reply_to(message, str(table.table), reply_markup=get_markup_cmd())
+    send_message_safe(message, str(table.table))
     return
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['pdf'])
-def send_pdf(message) -> NoReturn:
+def send_pdf(message: types.Message) -> NoReturn:
     def daemon_generate_pdf(msg: types.Message):
-        hosts_online: List[Tuple[Text, ...]] = select_hosts_online()
-        hosts_offline: List[Tuple[Text, ...]] = select_hosts_offline()
+        hosts_online: List[Host] = select_hosts_online(lock)
+        hosts_offline: List[Host] = select_hosts_offline(lock)
 
         cmd_interfaces: Text = 'ip address show'
         stdout_interfaces, stderr, ex = execute_command(cmd_interfaces)
@@ -255,8 +263,8 @@ def send_pdf(message) -> NoReturn:
         cmd_routes: Text = 'ip route list'
         stdout_routes, stderr, ex = execute_command(cmd_routes)
 
-        logger.critical('chage generate latex, type all_host change')
-        sys.exit(60)
+        # logger.critical('chage generate latex, type all_host change')
+        # sys.exit(60)
         string_latex = generate_latex(hosts_online, hosts_offline, stdout_interfaces, stdout_arp, stdout_routes)
         execute, file = latex_to_pdf(string_latex)
 
@@ -277,14 +285,14 @@ def send_pdf(message) -> NoReturn:
 
 
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot)
-def text_not_valid(message) -> NoReturn:
+def text_not_valid(message: types.Message) -> NoReturn:
     texto: Text = 'unknown command, enter a valid command :)'
     bot.reply_to(message, texto, reply_markup=get_markup_cmd())
     return
 
 
 @bot.message_handler(regexp=".*")
-def handle_resto(message) -> NoReturn:
+def handle_resto(message: types.Message) -> NoReturn:
     texto: Text = "You're not allowed to perform this action, that's because you're not me.\n" \
                   'As far as you know, it disappears -.-'
     bot.reply_to(message, texto, reply_markup=get_markup_cmd())
@@ -333,7 +341,7 @@ def daemon_scan_network() -> NoReturn:
     check_database()
     list_networks: List[ipaddress.ip_interface] = list()
     list_networks.append(ipaddress.ip_interface('192.168.1.0/24'))
-    sn: ScanNmap = ScanNmap(list_networks)
+    sn: ScanNmap = ScanNmap(list_networks, lock)
     delay: int = int(config_basic.get('DELAY'))
 
     while True:

@@ -5,10 +5,11 @@ from __future__ import annotations
 
 import logging
 import subprocess
+import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Text, Tuple, Any, Optional
+from typing import Text, Tuple, Any, Optional, List, IO
 
 import jinja2
 from procamora_utils.logger import get_logging
@@ -18,11 +19,13 @@ from host import Host
 logger: logging = get_logging(False, 'pdf')
 
 
-def generate_latex(hosts_online: Dict[Text, Host], hosts_offline: Dict[Text, Host], interfaces: Text, arp: Text, routes: Text) -> Text:
+def generate_latex(hosts_online: List[Host], hosts_offline: List[Host], interfaces: Text, arp: Text, routes: Text) \
+        -> Text:
     working_path: Path = Path(__file__).resolve().parent
     # report_path: Path = Path(working_path, 'resources', 'templates', 'report.tex')
     personal_icon_path: Path = Path(working_path, 'resources', 'images', 'personal.png')
     proyect_icon_path: Path = Path(working_path, 'resources', 'images', 'logo_transparent.png')
+    template_latex_path: Path = Path('resources/templates/report.tex')
 
     latex_jinja_env = jinja2.Environment(
         block_start_string=r'\BLOCK{',
@@ -39,13 +42,17 @@ def generate_latex(hosts_online: Dict[Text, Host], hosts_offline: Dict[Text, Hos
     )
 
     now = datetime.now()  # current date and time
-    template: jinja2.environment.Template = latex_jinja_env.get_template('resources/templates/report.tex')
+    template: jinja2.environment.Template = latex_jinja_env.get_template(str(template_latex_path))
 
     title_pdf = r'\href{https://telegram.me/procamora_scan_bot}{procamora_scan_bot}'
 
-    latex_generate = template.render(date=now.strftime("%m/%d/%Y"), title=title_pdf, author='minitrue', hosts_online=hosts_online,
-                                     hosts_offline = hosts_offline, icon1=str(personal_icon_path), icon2=str(proyect_icon_path),
-                                     interfaces=interfaces, arp=arp, routes=routes)
+    try:
+        latex_generate = template.render(date=now.strftime("%m/%d/%Y"), title=title_pdf, author='minitrue', hosts_online=hosts_online,
+                                         hosts_offline=hosts_offline, icon1=str(personal_icon_path), icon2=str(proyect_icon_path),
+                                         interfaces=interfaces, arp=arp, routes=routes)
+    except jinja2.exceptions.UndefinedError as e:
+        logger.critical(f'Error in jinja.rende: {e}')
+        sys.exit(0)
     return latex_generate
 
 
@@ -106,18 +113,17 @@ def execute_command(command: Text) -> Tuple[Text, Text, subprocess.Popen]:
 
 
 def main():
-    online = {
-        '192.168.1.1': Host(ip='192.168.1.1', mac='00:00:00:00:00:00', vendor='Sagemcom Broadband SAS',
-                            date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='router', id=1),
-        '192.168.1.131': Host(ip='192.168.1.31', mac='00:00:00:00:00:11',  vendor='BQ',
-                              date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='movil1', id=12),
-        '192.168.1.42': Host(ip='192.168.1.2', mac='00:00:00:00:00:22', vendor='Intel Corporate',
-                             date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil1', id=13)
-    }
-    offline = {
-        '192.168.1.41': Host(ip='192.168.1.23', mac='00:00:00:00:00:33', vendor='Intel Corporate',
-                             date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil2', id=13)
-    }
+    online: List[Host] = [
+        Host(ip='192.168.1.1', mac='00:00:00:00:00:00', vendor='Sagemcom Broadband SAS',
+             date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='router', id=1),
+        Host(ip='192.168.1.31', mac='00:00:00:00:00:11', vendor='BQ',
+             date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='movil1', id=12),
+        Host(ip='192.168.1.2', mac='00:00:00:00:00:22', vendor='Intel Corporate',
+             date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil1', id=13)
+    ]
+    offline: List[Host] = [Host(ip='192.168.1.23', mac='00:00:00:00:00:33', vendor='Intel Corporate',
+                          date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil2', id=13)
+                     ]
     cmd_interfaces: Text = 'ip address show'
     stdout_interfaces, stderr, ex = execute_command(cmd_interfaces)
 
