@@ -74,7 +74,7 @@ def latex_to_pdf(code_latex) -> Optional[Tuple[subprocess.CompletedProcess, Any]
     logger.info(f'returncode: {execute.returncode}')
 
     response = Path(dir_temp.name, file_tex.name.replace(".tex", ".pdf"))
-    file_data = open(str(response), 'rb')
+    file_data: IO = response.open('rb')
 
     ####################
     import time
@@ -122,8 +122,8 @@ def main():
              date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil1', id=13)
     ]
     offline: List[Host] = [Host(ip='192.168.1.23', mac='00:00:00:00:00:33', vendor='Intel Corporate',
-                          date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil2', id=13)
-                     ]
+                                date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil2', id=13)
+                           ]
     cmd_interfaces: Text = 'ip address show'
     stdout_interfaces, stderr, ex = execute_command(cmd_interfaces)
 

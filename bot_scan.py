@@ -40,7 +40,7 @@ import threading
 import time
 from pathlib import Path
 from threading import Lock
-from typing import NoReturn, Tuple, List, Text, Dict
+from typing import NoReturn, Tuple, List, Text, Dict, IO
 
 from procamora_utils.ip import IP
 from procamora_utils.logger import get_logging
@@ -154,7 +154,7 @@ def daemon_openvas_scan(target: Text, message: types.Message):
         time.sleep(240)
 
     file: Path = openvas.report(report_id, 'pdf', Path('/tmp/'))
-    file_data = open(str(file), 'rb')
+    file_data: IO = file.open('rb')
     bot.send_document(message.chat.id, file_data, reply_markup=get_markup_cmd())
 
 
