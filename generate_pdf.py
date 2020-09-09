@@ -18,7 +18,7 @@ from host import Host
 logger: logging = get_logging(False, 'pdf')
 
 
-def generate_latex(hosts: Dict[Text, Host], interfaces: Text, arp: Text, routes: Text) -> Text:
+def generate_latex(hosts_online: Dict[Text, Host], hosts_offline: Dict[Text, Host], interfaces: Text, arp: Text, routes: Text) -> Text:
     working_path: Path = Path(__file__).resolve().parent
     # report_path: Path = Path(working_path, 'resources', 'templates', 'report.tex')
     personal_icon_path: Path = Path(working_path, 'resources', 'images', 'personal.png')
@@ -43,8 +43,8 @@ def generate_latex(hosts: Dict[Text, Host], interfaces: Text, arp: Text, routes:
 
     title_pdf = r'\href{https://telegram.me/procamora_scan_bot}{procamora_scan_bot}'
 
-    latex_generate = template.render(date=now.strftime("%m/%d/%Y"), title=title_pdf, author='asdasd', hosts=hosts,
-                                     icon1=str(personal_icon_path), icon2=str(proyect_icon_path),
+    latex_generate = template.render(date=now.strftime("%m/%d/%Y"), title=title_pdf, author='minitrue', hosts_online=hosts_online,
+                                     hosts_offline = hosts_offline, icon1=str(personal_icon_path), icon2=str(proyect_icon_path),
                                      interfaces=interfaces, arp=arp, routes=routes)
     return latex_generate
 
@@ -106,14 +106,16 @@ def execute_command(command: Text) -> Tuple[Text, Text, subprocess.Popen]:
 
 
 def main():
-    aaaaaaa = {
-        '192.168.1.1': Host(ip='192.168.1.1', mac='00:00:00:00:00:00', active=True, vendor='Sagemcom Broadband SAS',
+    online = {
+        '192.168.1.1': Host(ip='192.168.1.1', mac='00:00:00:00:00:00', vendor='Sagemcom Broadband SAS',
                             date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='router', id=1),
-        '192.168.1.131': Host(ip='192.168.1.31', mac='00:00:00:00:00:00', active=True, vendor='BQ',
+        '192.168.1.131': Host(ip='192.168.1.31', mac='00:00:00:00:00:11',  vendor='BQ',
                               date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='movil1', id=12),
-        '192.168.1.42': Host(ip='192.168.1.2', mac='00:00:00:00:00:00', active=False, vendor='Intel Corporate',
-                             date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil1', id=13),
-        '192.168.1.41': Host(ip='192.168.1.23', mac='00:00:00:00:00:00', active=False, vendor='Intel Corporate',
+        '192.168.1.42': Host(ip='192.168.1.2', mac='00:00:00:00:00:22', vendor='Intel Corporate',
+                             date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil1', id=13)
+    }
+    offline = {
+        '192.168.1.41': Host(ip='192.168.1.23', mac='00:00:00:00:00:33', vendor='Intel Corporate',
                              date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil2', id=13)
     }
     cmd_interfaces: Text = 'ip address show'
@@ -125,7 +127,7 @@ def main():
     cmd_routes: Text = 'ip route list'
     stdout_routes, stderr, ex = execute_command(cmd_routes)
 
-    string_latex = generate_latex(aaaaaaa, stdout_interfaces, stdout_arp, stdout_routes)
+    string_latex = generate_latex(online, offline, stdout_interfaces, stdout_arp, stdout_routes)
     latex_to_pdf(string_latex)
 
 

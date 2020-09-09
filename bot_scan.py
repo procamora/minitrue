@@ -15,7 +15,7 @@ procamora_scan_bot
 Description:
 This is a bot to manage network scanner using nmap. A local agent is required to perform the scans
 
-About: 
+About:
 This bot has been developed by @procamora
 
 Botpic:
@@ -241,7 +241,8 @@ def send_offline(message) -> NoReturn:
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['pdf'])
 def send_pdf(message) -> NoReturn:
     def daemon_generate_pdf(msg: types.Message):
-        all_hosts: List[Tuple[Text, ...]] = select_all_hosts()
+        hosts_online: List[Tuple[Text, ...]] = select_hosts_online()
+        hosts_offline: List[Tuple[Text, ...]] = select_hosts_offline()
 
         cmd_interfaces: Text = 'ip address show'
         stdout_interfaces, stderr, ex = execute_command(cmd_interfaces)
@@ -252,7 +253,7 @@ def send_pdf(message) -> NoReturn:
 
         logger.critical('chage generate latex, type all_host change')
         sys.exit(60)
-        string_latex = generate_latex(all_hosts, stdout_interfaces, stdout_arp, stdout_routes)
+        string_latex = generate_latex(hosts_online, hosts_offline, stdout_interfaces, stdout_arp, stdout_routes)
         execute, file = latex_to_pdf(string_latex)
 
         if execute.returncode == 0:

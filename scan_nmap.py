@@ -113,7 +113,10 @@ class ScanNmap:
 
             if len(t["vendor"]) == 0:
                 # desc = MacLookup().lookup(mac)
-                vend = self.vendor.lookup(mac)
+                try:
+                    vend = self.vendor.lookup(mac)
+                except:
+                    vend = '-'
             else:
                 vend = t["vendor"]
 

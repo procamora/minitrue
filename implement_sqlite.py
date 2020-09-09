@@ -43,43 +43,17 @@ def update_date(date: Text) -> NoReturn:
 
 
 def insert_host(host: Host) -> NoReturn:
-    # active es in integer en la BD 0 (false) and 1 (true). Si se inserta es porque esta activo
-    # >> > int(True == True)
-    # 1
-    # >> > int(False == True)
-    # 0
-    # active: int = int(host.active == True)
-    # INSERT OR REPLACE INTO
     query: Text = f"INSERT INTO Hosts(ip, mac, vendor, description, date, network) VALUES ('{host.ip}'," \
                   f"'{host.mac}', '{host.vendor}','{host.description}','{host.date}','{host.network}');"
     logger.debug(query)
-    # TODO chapuza temporal, si falla al insertar es que ya existe y hay que actualizar. Compronar si existe antes
-    # de intentar insertar de primeras
-    # try:
     conection_sqlite(DB, query)
-    # except sqlite3.IntegrityError as e:
-    #    logger.critical(e)
-    #    update_host(host)
 
 
 def update_host(host: Host) -> NoReturn:
-    # active: int = int(host.active == True)
     query: Text = f"UPDATE Hosts SET ip='{host.ip}', mac='{host.mac}', vendor='{host.vendor}', date='{host.date}', " \
                   f"network='{host.network}' WHERE ip LIKE '{host.ip}';"
     logger.debug(query)
     conection_sqlite(DB, query)
-
-
-# def update_host_offline(date: Text, network: Text):
-#  """
-#  Metodo que pone inactivo todos aquellos host que no se hayan actualizado con el ultimo escaneo
-#  :param date:
-#  :param network:
-# :return:
-# """
-#   query: Text = f"UPDATE Hosts SET active=0 WHERE date <> '{date}' AND network LIKE '{network}';"
-#  logger.debug(query)
-# conection_sqlite(DB, query)
 
 
 def check_database() -> NoReturn:

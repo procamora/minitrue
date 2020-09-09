@@ -176,10 +176,8 @@
 		\hline
 		\textbf{IP} & \textbf{MAC} & \textbf{VENDOR} & \textbf{DESCRIPTION} & \textbf{NETWORK} \\ \hline
 
-		%% for x in hosts
-		%% if hosts[x].active
-		\VAR{hosts[x].ip} & \VAR{hosts[x].mac} & \VAR{hosts[x].vendor} & \VAR{hosts[x].description} & \VAR{hosts[x].network} \\ \hline
-		%% endif
+		%% for x in hosts_online
+		\VAR{hosts_online[x].ip} & \VAR{hosts_online[x].mac} & \VAR{hosts_online[x].vendor} & \VAR{hosts_online[x].description} & \VAR{hosts_online[x].network} \\ \hline
 		%% endfor
 
 	\end{tabular}
@@ -197,10 +195,8 @@
 		\hline
 		\textbf{IP} & \textbf{MAC} & \textbf{VENDOR} & \textbf{DESCRIPTION} & \textbf{NETWORK} \\ \hline
 
-		%% for x in hosts
-		%% if not hosts[x].active
-		\VAR{hosts[x].ip} & \VAR{hosts[x].mac} & \VAR{hosts[x].vendor} & \VAR{hosts[x].description} & \VAR{hosts[x].network} \\ \hline
-		%% endif
+		%% for x in hosts_offline
+		\VAR{hosts_offline[x].ip} & \VAR{hosts_offline[x].mac} & \VAR{hosts_offline[x].vendor} & \VAR{hosts_offline[x].description} & \VAR{hosts_offline[x].network} \\ \hline
 		%% endfor
 
 	\end{tabular}
