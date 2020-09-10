@@ -113,17 +113,10 @@ def execute_command(command: Text) -> Tuple[Text, Text, subprocess.Popen]:
 
 
 def main():
-    online: List[Host] = [
-        Host(ip='192.168.1.1', mac='00:00:00:00:00:00', vendor='Sagemcom Broadband SAS',
-             date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='router', id=1),
-        Host(ip='192.168.1.31', mac='00:00:00:00:00:11', vendor='BQ',
-             date='Sun Mar 22 00:04:08 2020', network='192.168.1.0/24', description='movil1', id=12),
-        Host(ip='192.168.1.2', mac='00:00:00:00:00:22', vendor='Intel Corporate',
-             date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil1', id=13)
-    ]
-    offline: List[Host] = [Host(ip='192.168.1.23', mac='00:00:00:00:00:33', vendor='Intel Corporate',
-                                date='Sat Mar 21 01:13:24 2020', network='192.168.1.0/24', description='portatil2', id=13)
-                           ]
+    from implement_sqlite import select_hosts_online, select_hosts_offline
+    online: List[Host] = select_hosts_online(None)
+    offline: List[Host] = select_hosts_offline(None)
+    
     cmd_interfaces: Text = 'ip address show'
     stdout_interfaces, stderr, ex = execute_command(cmd_interfaces)
 

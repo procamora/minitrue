@@ -272,10 +272,7 @@ def send_pdf(message: types.Message) -> NoReturn:
             # IMPORTANTE para que el dicumento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
             bot.send_document(msg.chat.id, file, reply_markup=get_markup_cmd(), )
         else:  # Si la salida del comando excede el limite de mensaje de Telegram se trunca
-            new_msg = execute.stdout.decode('utf-8')
-            if len(new_msg) > 4096:
-                new_msg = f'{execute.stdout.decode("utf-8")[0:4050]}\n.................\nTruncated message'
-            bot.reply_to(msg, new_msg, reply_markup=get_markup_cmd())
+            send_message_safe(message, execute.stdout.decode('utf-8'))
         return
 
     d = threading.Thread(target=daemon_generate_pdf, name='generate_pdf', args=(message,))
@@ -293,9 +290,9 @@ def text_not_valid(message: types.Message) -> NoReturn:
 
 @bot.message_handler(regexp=".*")
 def handle_resto(message: types.Message) -> NoReturn:
-    texto: Text = "You're not allowed to perform this action, that's because you're not me.\n" \
+    text: Text = "You're not allowed to perform this action, that's because you're not me.\n" \
                   'As far as you know, it disappears -.-'
-    bot.reply_to(message, texto, reply_markup=get_markup_cmd())
+    bot.reply_to(message, text, reply_markup=get_markup_cmd())
     return  # solo esta puesto para que no falle la inspeccion de codigo
 
 

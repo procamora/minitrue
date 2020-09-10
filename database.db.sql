@@ -15,4 +15,8 @@ CREATE TABLE IF NOT EXISTS "Datetime" (
     "date"  TEXT NOT NULL UNIQUE
 );
 INSERT INTO Datetime(id, date) VALUES (1, "trash");
+CREATE TABLE IF NOT EXISTS "Description" (
+    "mac"    TEXT NOT NULL PRIMARY KEY UNIQUE,
+    "description"  TEXT NOT NULL UNIQUE
+);
 COMMIT;
