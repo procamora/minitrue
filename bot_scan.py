@@ -398,18 +398,25 @@ def daemon_scan_network() -> NoReturn:
     sn: ScanNmap = ScanNmap(list_networks, lock)
     delay: int = int(config_basic.get('DELAY'))
 
+    iteration: int = 0
     while True:
         # Al capturar el error en el nbucle infinito, si falla una vez por x motivo no afectaria,
         # ya que seguiria ejecutandose en siguientes iteraciones
         try:
             sn.update_db()  # Actualizamos dict de host, por si se han detectado nuevos
-            new_hosts: List[Host] = sn.run()
+            if iteration % 5 == 0:  # scan avanzado que ejecutamos 1 de cada 5 escaneos
+                logger.info('scan TCP FIN')
+                new_hosts: List[Host] = sn.run(sn.nmap_tcp_fin_scan, True)
+            else:
+                new_hosts: List[Host] = sn.run(sn.nmap_ping_scan, True)
             if len(new_hosts) > 0:
                 for host in new_hosts:
                     bot.send_message(owner_bot, f'new host:  \n\n{host}', reply_markup=get_markup_new_host(host))
 
         except Exception as e:
             logger.error(f'Fail thread: {e}')
+
+        iteration += 1
 
         # https://stackoverflow.com/questions/17075788/python-is-time-sleepn-cpu-intensive
         time.sleep(delay)

@@ -26,25 +26,26 @@ class ScanNmap:
     def __init__(self: ScanNmap, subnets: ipaddress.ip_interface = None, lock: Lock = None) -> NoReturn:
         self.nmap_tcp_scan: Text = '--top-ports 1000 --open -T5 -sV -v -n'
         self.nmap_ping_scan: Text = '-n -sP'
-        self.lock: Lock = lock
+        self.nmap_tcp_fin_scan: Text = '-n -sF -T5'
+        self._lock: Lock = lock
 
-        self.local_interfaces: Dict[Text, Text] = dict()
-        self.subnets: List[ipaddress.ip_interface] = list()
-        self.db_mac_hosts: Tuple[Text] = tuple()
-        self.vendor = MacLookup()
-        self.vendor.load_vendors()
+        self._local_interfaces: Dict[Text, Text] = dict()
+        self._subnets: List[ipaddress.ip_interface] = list()
+        self._db_mac_hosts: Tuple[Text] = tuple()
+        self._vendor = MacLookup()
+        self._vendor.load_vendors()
 
         self._set_local_interfaces()
         if subnets is None or len(subnets) == 0:  # Si añado las interfaces manualmente, no las busco
             self._set_ip_interfaces()
         else:
-            self.subnets = subnets
+            self._subnets = subnets
         self.update_db()
-        logger.info(self.subnets)
+        logger.info(self._subnets)
 
     def update_db(self: ScanNmap) -> NoReturn:
-        self.db_mac_hosts = select_mac_all_hosts(self.lock)
-        logger.debug(self.db_mac_hosts)
+        self._db_mac_hosts = select_mac_all_hosts(self._lock)
+        logger.debug(self._db_mac_hosts)
 
     def _set_local_interfaces(self: ScanNmap) -> NoReturn:
         """
@@ -55,7 +56,7 @@ class ScanNmap:
         for i in netifaces.interfaces():
             addrs = netifaces.ifaddresses(i)
             if netifaces.AF_INET in addrs and netifaces.AF_LINK in addrs:
-                self.local_interfaces[addrs[netifaces.AF_INET][0]['addr']] = addrs[netifaces.AF_LINK][0]['addr']
+                self._local_interfaces[addrs[netifaces.AF_INET][0]['addr']] = addrs[netifaces.AF_LINK][0]['addr']
 
     def _set_ip_interfaces(self: ScanNmap):
         """
@@ -73,7 +74,7 @@ class ScanNmap:
             if len(i) > 0:
                 interface = i.strip().split(' ')[1]
                 subnet = ipaddress.ip_interface(interface)
-                self.subnets.append(subnet)
+                self._subnets.append(subnet)
 
     def _get_mac_aux(self: ScanNmap, ip: Text) -> Text:
         """
@@ -82,8 +83,8 @@ class ScanNmap:
         :return:
         """
         # Si es una IP del propio sistema la devulvo directamente, ya que no esta en la tabla ARP
-        if ip in self.local_interfaces.keys():
-            return self.local_interfaces[ip]
+        if ip in self._local_interfaces.keys():
+            return self._local_interfaces[ip]
 
         command: Text = f'ip neigh show | grep "{ip} dev"'
         stdout, stderr, ex = self.execute_command(command)
@@ -91,15 +92,17 @@ class ScanNmap:
             logger.error(f'{ip} -> {stderr}')
         return stdout.strip().split(' ')[4]
 
-    def ping_subnet_scan(self: ScanNmap, subnet: ipaddress.ip_interface) -> List[Host]:
+    def scan_network(self: ScanNmap, subnet: ipaddress.ip_interface, scan_mode: Text, sudo: bool = False) -> List[Host]:
         """
         Metodo encargado de realizar el escaneo de una subred, retorna todos los hosts que encuentra
         :param subnet:
+        :param scan_mode:
+        :param sudo:
         :return:
         """
         hosts: List[Host] = list()
         nm: nmap.nmap.PortScanner = nmap.PortScanner()
-        scan: Dict = nm.scan(hosts=str(subnet), arguments=self.nmap_ping_scan, sudo=False)
+        scan: Dict = nm.scan(hosts=str(subnet), arguments=scan_mode, sudo=sudo)
         logger.debug(nm.command_line())
 
         ip: Text
@@ -115,11 +118,15 @@ class ScanNmap:
             if len(t["vendor"]) == 0:
                 # desc = MacLookup().lookup(mac)
                 try:
-                    vend = str(self.vendor.lookup(mac)).split(' ')[0].lower().capitalize()
-                except Exception:
+                    vend = str(self._vendor.lookup(mac))
+                except Exception as e:
                     vend = '-'
+                    logger.critical('cath exception name ')
+                    logger.critical(e)
             else:
-                vend = t["vendor"]
+                vend: str = list(t["vendor"].values())[0]
+
+            vend = vend.split(' ')[0].lower().capitalize()
 
             host: Host = Host(ip, mac, vend, scan["nmap"]["scanstats"]["timestr"], str(subnet.network))
             logger.debug(f'detect: {host}')
@@ -159,16 +166,16 @@ class ScanNmap:
         response_host: List[Host] = list()
 
         if len(hosts) > 0:  # always update date scan
-            update_date(hosts[0].date, self.lock)
+            update_date(hosts[0].date, self._lock)
 
         for host in hosts:
-            insert_host(host, self.lock)
-            if host.mac not in self.db_mac_hosts:
+            insert_host(host, self._lock)
+            if host.mac not in self._db_mac_hosts:
                 logger.warning(f'new host: {host}')
                 response_host.append(host)
         return response_host
 
-    def run(self: ScanNmap) -> List[Host]:
+    def run(self: ScanNmap, scan_mode: Text, sudo: bool = False) -> List[Host]:
         """
         Metodo encargado de recorrer todas las interfaces y realizar un escaneo en cada una de ellas. Retorna los nuevos
         hosts que se han encontrado
@@ -177,7 +184,7 @@ class ScanNmap:
         subnet: ipaddress.ip_interface
         response_host: List[Host] = list()
 
-        for subnet in self.subnets:
+        for subnet in self._subnets:
             logger.info(f'Scanning: {subnet}')
 
             valid: bool = True
@@ -188,7 +195,7 @@ class ScanNmap:
                 logger.info(f'Scanning: {valid}')
 
             if valid:
-                hosts: List[Host] = self.ping_subnet_scan(subnet)
+                hosts: List[Host] = self.scan_network(subnet, scan_mode, sudo)
                 logger.debug(f'------> {hosts}')
                 response_host += self._insert_host(hosts)
                 # update_host_offline(hosts[0].date, hosts[0].network)
@@ -230,7 +237,7 @@ def main(args: List[Text]):
     #    list_networks.append(ipaddress.ip_interface(ip))
 
     a = ScanNmap(list_networks)
-    print(a.run())
+    print(a.run(a.nmap_ping_scan, False))
 
 
 if __name__ == '__main__':

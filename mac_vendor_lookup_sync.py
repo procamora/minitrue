@@ -78,7 +78,10 @@ class SyncMacLookup(BaseMacLookup):
             self.load_vendors()
         if type(mac) == str:
             mac = mac.encode("utf8")
-        return self.prefixes[mac[:6]].decode("utf8")
+        if mac[:6] in self.prefixes:
+            return self.prefixes[mac[:6]].decode("utf8")
+        else:
+            return '-'
 
 
 class MacLookup(BaseMacLookup):
