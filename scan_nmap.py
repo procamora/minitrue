@@ -115,13 +115,13 @@ class ScanNmap:
             if len(t["vendor"]) == 0:
                 # desc = MacLookup().lookup(mac)
                 try:
-                    vend = self.vendor.lookup(mac)
+                    vend = str(self.vendor.lookup(mac)).split(' ')[0].lower().capitalize()
                 except Exception:
                     vend = '-'
             else:
                 vend = t["vendor"]
 
-            host: Host = Host(ip, mac, vend, scan["nmap"]["scanstats"]["timestr"], subnet.network)
+            host: Host = Host(ip, mac, vend, scan["nmap"]["scanstats"]["timestr"], str(subnet.network))
             logger.debug(f'detect: {host}')
             hosts.append(host)
 

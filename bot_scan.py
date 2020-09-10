@@ -40,7 +40,7 @@ import threading
 import time
 from pathlib import Path
 from threading import Lock
-from typing import NoReturn, Tuple, List, Text, Dict, IO
+from typing import NoReturn, Tuple, List, Text, Dict, IO, Callable
 
 from procamora_utils.ip import IP
 from procamora_utils.logger import get_logging
@@ -52,7 +52,7 @@ from terminaltables import AsciiTable
 
 from generate_pdf import latex_to_pdf, generate_latex
 from host import Host
-from implement_sqlite import select_hosts_online, select_hosts_offline, check_database
+from implement_sqlite import select_hosts_online, select_hosts_offline, update_descriptions, check_database
 from openvas import OpenVas, FULL_FAST
 from scan_nmap import ScanNmap
 
@@ -82,6 +82,7 @@ my_commands: Tuple[Text, ...] = (
     '/online',  # 1
     '/offline',  # 2
     '/pdf',  # 3
+    '/help'  # -2
     '/exit',  # -1
 )
 
@@ -117,9 +118,13 @@ def get_markup_cmd() -> types.ReplyKeyboardMarkup:
 
 def get_markup_new_host(host: Host):
     markup = InlineKeyboardMarkup()
-    markup.row_width = 2
+    inline_keyboard: Tuple[InlineKeyboardButton, ...] = (InlineKeyboardButton('nmap', callback_data=f'nmap_{host.ip}'),
+                                                         InlineKeyboardButton('openvas', callback_data=f'openvas_{host.ip}'),
+                                                         InlineKeyboardButton('description', callback_data=f'description_{host.mac}'))
+    markup.row_width = len(inline_keyboard)
     markup.add(InlineKeyboardButton('nmap', callback_data=f'nmap_{host.ip}'),
-               InlineKeyboardButton('openvas', callback_data=f'openvas_{host.ip}'))
+               InlineKeyboardButton('openvas', callback_data=f'openvas_{host.ip}'),
+               InlineKeyboardButton('description', callback_data=f'description_{host.mac}'))
     return markup
 
 
@@ -166,6 +171,52 @@ def send_message_safe(message: types.Message, text: Text) -> NoReturn:
         bot.reply_to(message, text, reply_markup=get_markup_cmd())
 
 
+def report_and_repeat(message: types.Message, mac: Text, func: Callable, info: Text):
+    """
+    Metodo auxiliar con el que volver a preguntar tras una respuesta no valida
+    :param message:
+    :param protocol:
+    :param func:
+    :param info:
+    :return:
+    """
+    bot.reply_to(message, info, reply_markup=get_markup_cmd())
+    bot.register_next_step_handler(message, func, mac=mac)
+
+
+def is_response_command(message: types.Message):
+    response: bool = False
+    if message.text[0] == '/':
+        response = True
+
+    if message.text == my_commands[-1]:  # exit
+        bot.reply_to(message, "Cancelled the change of description", reply_markup=get_markup_cmd())
+    elif message.text == my_commands[-2]:  # help
+        command_help(message)
+    elif message.text == my_commands[0]:  # scan
+        send_scan(message)
+    elif message.text == my_commands[1]:  # online
+        send_online(message)
+    elif message.text == my_commands[2]:  # offline
+        send_offline(message)
+    elif message.text == my_commands[3]:  # pdf
+        send_pdf(message)
+    return response
+
+
+def check_description(message: types.Message, mac: Text) -> NoReturn:
+    if is_response_command(message):
+        return
+
+    if not re.search(r'^(\w+| )+$', message.text):
+        report_and_repeat(message, mac, check_description,
+                          'Enter a valid description, it can only contains alphanumeric characters and space')
+        return
+
+    update_descriptions(mac, description=message.text, lock=lock)
+    bot.reply_to(message, 'update description', reply_markup=get_markup_cmd())
+
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call: types.CallbackQuery):
     ip: Text = call.data.split('_')[1]
@@ -179,6 +230,11 @@ def callback_query(call: types.CallbackQuery):
         d = threading.Thread(target=daemon_openvas_scan, name='openvas_scan', args=(ip, call.message))
         d.setDaemon(True)
         d.start()
+    elif re.search(r'description_.*', call.data):
+        mac: Text = ip
+        bot.answer_callback_query(call.id, f"creating description for {mac}")
+        bot.reply_to(call.message, f'What description do you want to give to the host: {mac}', reply_markup=get_markup_cmd())
+        bot.register_next_step_handler(call.message, check_description, mac=mac)
 
 
 # Handle always first "/start" message when new chat with your bot is created
@@ -230,9 +286,10 @@ def send_scan(message: types.Message) -> NoReturn:
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['online'])
 def send_online(message: types.Message) -> NoReturn:
     response: List[Host] = select_hosts_online(lock)
-    update = list([['IP', 'vendor']])
+    update = list([['IP', 'Desc', 'Vendor']])
     for i in response:
-        update.append((i.ip, i.vendor))
+        update.append((i.ip, i.description, i.vendor))
+
     table: AsciiTable = AsciiTable(update)
     send_message_safe(message, str(table.table))
     return
@@ -241,9 +298,9 @@ def send_online(message: types.Message) -> NoReturn:
 @bot.message_handler(func=lambda message: message.chat.id == owner_bot, commands=['offline'])
 def send_offline(message: types.Message) -> NoReturn:
     response: List[Host] = select_hosts_offline(lock)
-    update = list([['IP', 'vendor']])
+    update = list([['IP', 'Desc', 'Vendor']])
     for i in response:
-        update.append((i.ip, i.vendor))
+        update.append((i.ip, i.description, i.vendor))
 
     table: AsciiTable = AsciiTable(update)
     send_message_safe(message, str(table.table))
@@ -291,7 +348,7 @@ def text_not_valid(message: types.Message) -> NoReturn:
 @bot.message_handler(regexp=".*")
 def handle_resto(message: types.Message) -> NoReturn:
     text: Text = "You're not allowed to perform this action, that's because you're not me.\n" \
-                  'As far as you know, it disappears -.-'
+                 'As far as you know, it disappears -.-'
     bot.reply_to(message, text, reply_markup=get_markup_cmd())
     return  # solo esta puesto para que no falle la inspeccion de codigo
 

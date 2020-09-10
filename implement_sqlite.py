@@ -38,11 +38,12 @@ def select_hosts_online(lock: Lock) -> List[Host]:
    el ultimo escaneo realizado.
     """
     query: Text = \
-"""SELECT h.*, d.description
-FROM Hosts as h
-LEFT JOIN Description as d ON h.mac = d.mac
-WHERE h.date IN (SELECT Datetime.date FROM Datetime LIMIT 1) 
-ORDER BY h.id DESC;"""
+        """SELECT h.id, h.ip, h.mac, h.date, h.network, d.description, v.vendor
+        FROM Hosts as h
+        LEFT JOIN Descriptions as d ON h.mac = d.mac
+        INNER JOIN Vendors as v ON h.vendor = v.id
+        WHERE h.date IN (SELECT Datetime.date FROM Datetime LIMIT 1) 
+        ORDER BY h.id DESC;"""
     response_query_str: List[Dict[Text, Any]] = conection_sqlite(DB, query, is_dict=True, mutex=lock)
     return get_list_host(response_query_str)
 
@@ -55,15 +56,16 @@ def select_hosts_offline(lock: Lock) -> List[Host]:
     3. Agrupamo por mac para eliminar hosts duplicados.
     """
     query: Text = \
-"""SELECT h.*, d.description
-FROM (SELECT * FROM Hosts ORDER BY id DESC) as h
-LEFT JOIN Description as d ON h.mac = d.mac
-WHERE h.mac NOT IN (
-		SELECT h2.mac
-		FROM Hosts as h2
-		WHERE h2.date IN (SELECT Datetime.date FROM Datetime LIMIT 1) 
-)
-GROUP BY h.mac"""
+        """SELECT h.id, h.ip, h.mac, h.date, h.network, d.description, v.vendor
+        FROM (SELECT * FROM Hosts ORDER BY id DESC) as h
+        LEFT JOIN Descriptions as d ON h.mac = d.mac
+        INNER JOIN Vendors as v ON h.vendor = v.id
+        WHERE h.mac NOT IN (
+                SELECT h2.mac
+                FROM Hosts as h2
+                WHERE h2.date IN (SELECT Datetime.date FROM Datetime LIMIT 1) 
+        )
+        GROUP BY h.mac"""
     response_query_str: List[Dict[Text, Any]] = conection_sqlite(DB, query, is_dict=True, mutex=lock)
 
     return get_list_host(response_query_str)
@@ -76,18 +78,38 @@ def update_date(date: Text, lock: Lock) -> NoReturn:
 
 
 def insert_host(host: Host, lock: Lock) -> NoReturn:
-    query: Text = f"INSERT INTO Hosts(ip, mac, vendor, date, network) VALUES ('{host.ip}'," \
-                  f"'{host.mac}', '{host.vendor}','{host.date}','{host.network}');"
+    # insert vendor if not exist vendor in table vendors
+    query: Text = \
+        f"""INSERT INTO Vendors(vendor)
+        SELECT * FROM (SELECT '{host.vendor}')
+        WHERE NOT EXISTS (
+            SELECT vendor FROM Vendors WHERE vendor = '{host.vendor}'
+        ) LIMIT 1;"""
     logger.debug(query)
     conection_sqlite(DB, query, mutex=lock)
-    
+
+    # get id vendors
+    query: Text = f"SELECT id FROM Vendors WHERE vendor LIKE '{host.vendor}'"
+    logger.debug(query)
+    vendor: List[Dict[Text, Any]] = conection_sqlite(DB, query, is_dict=True, mutex=lock)
+    if len(vendor) == 1:
+        id_vendor: int = vendor[0]['id']
+    else:
+        id_vendor: int = 1
+
+    # insert host
+    query: Text = f"INSERT INTO Hosts(ip, mac, vendor, date, network) VALUES ('{host.ip}'," \
+                  f"'{host.mac}', {id_vendor},'{host.date}','{host.network}');"
+    logger.debug(query)
+    conection_sqlite(DB, query, mutex=lock)
+
     # insert description if not exist mac in table description
     query: Text = \
-f"""INSERT INTO Description(mac, description)
-SELECT * FROM (SELECT '{host.mac}', '')
-WHERE NOT EXISTS (
-    SELECT mac FROM Description WHERE mac = '{host.mac}'
-) LIMIT 1;"""
+        f"""INSERT INTO Descriptions(mac, description)
+        SELECT * FROM (SELECT '{host.mac}', '+')
+        WHERE NOT EXISTS (
+            SELECT mac FROM Descriptions WHERE mac = '{host.mac}'
+        ) LIMIT 1;"""
     logger.debug(query)
     conection_sqlite(DB, query, mutex=lock)
 
@@ -95,6 +117,12 @@ WHERE NOT EXISTS (
 def update_host(host: Host, lock: Lock) -> NoReturn:
     query: Text = f"UPDATE Hosts SET ip='{host.ip}', mac='{host.mac}', vendor='{host.vendor}', date='{host.date}', " \
                   f"network='{host.network}' WHERE ip LIKE '{host.ip}';"
+    logger.debug(query)
+    conection_sqlite(DB, query, mutex=lock)
+
+
+def update_descriptions(mac: Text, description: Text, lock: Lock) -> NoReturn:
+    query: Text = f"UPDATE Descriptions SET description='{description}'  WHERE mac LIKE '{mac}';"
     logger.debug(query)
     conection_sqlite(DB, query, mutex=lock)
 
@@ -114,9 +142,6 @@ def check_database() -> NoReturn:
 
 if __name__ == '__main__':
     nlock: Lock = Lock()
-    print(select_hosts_offline(nlock))
     print(select_hosts_online(nlock))
+    print(select_hosts_offline(nlock))
     print(select_mac_all_hosts(nlock))
-    
-
-
