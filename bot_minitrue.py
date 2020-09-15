@@ -86,7 +86,7 @@ my_commands: Tuple[Text, ...] = (
     '/exit',  # -1
 )
 
-FILE_CONFIG: Path = Path(Path(__file__).resolve().parent, "settings.ini")
+FILE_CONFIG: Path = Path(Path(__file__).resolve().parent, "settings.cfg")
 if not FILE_CONFIG.exists():
     logger.critical(f'File {FILE_CONFIG} not exists and is necesary')
     FILE_CONFIG.write_text(get_basic_file_config())

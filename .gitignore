@@ -1,7 +1,7 @@
 # Propios
 .idea/
 database.db
-settings.ini
+settings.cfg
 
 
 # Byte-compiled / optimized / DLL files

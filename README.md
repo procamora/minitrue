@@ -35,7 +35,7 @@ pip3 install -r requirements.txt --user
 It is also necessary to install certain utilities in Linux, these can be installed as:
 
 ```bash
-sudo apt install -y nmap texlive-latex-recommended texlive-latex-extra texlive-lang-english
+sudo apt install -y nmap texlive-latex-recommended texlive-latex-extra texlive-lang-english python3-lxml
 
 # or
 
