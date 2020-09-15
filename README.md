@@ -35,11 +35,14 @@ pip3 install -r requirements.txt --user
 It is also necessary to install certain utilities in Linux, these can be installed as:
 
 ```bash
-sudo apt install -y nmap texlive-latex-recommended texlive-latex-extra texlive-lang-english python3-lxml
+sudo apt install -y nmap texlive-latex-recommended texlive-latex-extra \
+ texlive-lang-english python3-lxml
 
 # or
 
-sudo dnf install -y nmap texlive-collection-latexrecommended texlive-datetime texlive-tcolorbox texlive-smartdiagram texlive-zed-csp
+sudo dnf install -y nmap texlive-collection-latexrecommended \
+ texlive-datetime texlive-tcolorbox texlive-smartdiagram \
+ texlive-zed-csp
 ```
 
 
@@ -48,7 +51,7 @@ sudo dnf install -y nmap texlive-collection-latexrecommended texlive-datetime te
 
 
 ```bash
-python3 bot_scan.py
+python3 bot_minitrue.py
 ```
 
 
