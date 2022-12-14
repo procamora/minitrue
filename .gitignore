@@ -2,7 +2,7 @@
 .idea/
 database.db
 settings.cfg
-
+.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

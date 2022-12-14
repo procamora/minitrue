@@ -14,8 +14,8 @@ from typing import Optional, Dict, NoReturn, Text, Tuple
 
 from bs4 import BeautifulSoup
 from gvm.connections import TLSConnection
-# from gvm.protocols.latest import Gmp
-from gvm.protocols.gmpv7 import Gmp  # https://github.com/greenbone/python-gvm/issues/182
+from gvm.protocols.latest import Gmp
+#from gvm.protocols.gmpv7 import Gmp  # https://github.com/greenbone/python-gvm/issues/182
 from gvm.xml import pretty_print
 from lxml import etree
 from procamora_utils.ip import IP

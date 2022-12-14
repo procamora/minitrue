@@ -38,6 +38,7 @@ import subprocess
 import sys
 import threading
 import time
+import os
 from pathlib import Path
 from threading import Lock
 from typing import NoReturn, Tuple, List, Text, Dict, IO, Callable
@@ -56,19 +57,19 @@ from implement_sqlite import select_hosts_online, select_hosts_offline, update_d
 from openvas import OpenVas, FULL_FAST
 from scan_nmap import ScanNmap
 
-logger: logging = get_logging(False, 'bot_scan')
+log: logging = get_logging(False, 'bot_scan')
 
 
 def get_basic_file_config():
-    return '''[BASICS]
-ADMIN = 111111
-BOT_TOKEN = 1069111113:AAHOk9K5TAAAAAAAAAAIY1OgA_LNpAAAAA
+    return f'''[BASICS]
+ADMIN = {os.environ.get('TG_ADMIN')}
+BOT_TOKEN = {os.environ.get('TG_BOT_TOKEN')}
 DEBUG = 0
 DELAY = 30
 
 [DEBUG]
-ADMIN = 111111
-BOT_TOKEN = 1069111113:AAHOk9K5TAAAAAAAAAAIY1OgA_LNpAAAAA
+ADMIN = {os.environ.get('TG_ADMIN')}
+BOT_TOKEN = {os.environ.get('TG_BOT_DEBUG_TOKEN')}
 
 [OPENVAS]
 IP = 192.168.1.71
@@ -88,10 +89,10 @@ my_commands: Tuple[Text, ...] = (
 
 FILE_CONFIG: Path = Path(Path(__file__).resolve().parent, "settings.cfg")
 if not FILE_CONFIG.exists():
-    logger.critical(f'File {FILE_CONFIG} not exists and is necesary')
+    log.warning(f'File {FILE_CONFIG} not exists and is necesary')
     FILE_CONFIG.write_text(get_basic_file_config())
-    logger.critical(f'Creating file {FILE_CONFIG}. It is necessary to configure the file.')
-    sys.exit(1)
+    log.warning(f'Creating file {FILE_CONFIG}. It is necessary to configure the file.')
+    #sys.exit(1)
 
 config: configparser.ConfigParser = configparser.ConfigParser()
 config.read(FILE_CONFIG)
@@ -222,13 +223,11 @@ def callback_query(call: types.CallbackQuery):
     ip: Text = call.data.split('_')[1]
     if re.search(r'nmap_.*', call.data):
         bot.answer_callback_query(call.id, f"run thread scan tcp nmap to {ip}")
-        d = threading.Thread(target=daemon_tcp_scan, name='tcp_scan', args=(ip, call.message))
-        d.setDaemon(True)
+        d = threading.Thread(target=daemon_tcp_scan, daemon=True, name='tcp_scan', args=(ip, call.message))
         d.start()
     elif re.search(r'openvas_.*', call.data):
         bot.answer_callback_query(call.id, f"run thread scan tcp openvas to {ip}")
-        d = threading.Thread(target=daemon_openvas_scan, name='openvas_scan', args=(ip, call.message))
-        d.setDaemon(True)
+        d = threading.Thread(target=daemon_openvas_scan, daemon=True, name='openvas_scan', args=(ip, call.message))
         d.start()
     elif re.search(r'description_.*', call.data):
         mac: Text = ip
@@ -332,8 +331,7 @@ def send_pdf(message: types.Message) -> NoReturn:
             send_message_safe(message, execute.stdout.decode('utf-8'))
         return
 
-    d = threading.Thread(target=daemon_generate_pdf, name='generate_pdf', args=(message,))
-    d.setDaemon(True)
+    d = threading.Thread(target=daemon_generate_pdf, daemon=True, name='generate_pdf', args=(message,))
     d.start()
     return
 
@@ -395,6 +393,7 @@ def daemon_scan_network() -> NoReturn:
     check_database()
     list_networks: List[ipaddress.ip_interface] = list()
     list_networks.append(ipaddress.ip_interface('192.168.1.0/24'))
+    log.info(list_networks)
     sn: ScanNmap = ScanNmap(list_networks, lock)
     delay: int = int(config_basic.get('DELAY'))
 
@@ -405,7 +404,7 @@ def daemon_scan_network() -> NoReturn:
         try:
             sn.update_db()  # Actualizamos dict de host, por si se han detectado nuevos
             if iteration % 5 == 0:  # scan avanzado que ejecutamos 1 de cada 5 escaneos
-                logger.info('scan TCP FIN')
+                log.info('scan TCP FIN')
                 new_hosts: List[Host] = sn.run(sn.nmap_tcp_fin_scan, True)
             else:
                 new_hosts: List[Host] = sn.run(sn.nmap_ping_scan, True)
@@ -414,7 +413,7 @@ def daemon_scan_network() -> NoReturn:
                     bot.send_message(owner_bot, f'new host:  \n\n{host}', reply_markup=get_markup_new_host(host))
 
         except Exception as e:
-            logger.error(f'Fail thread: {e}')
+            log.error(f'Fail thread: {e}')
 
         iteration += 1
 
@@ -423,15 +422,14 @@ def daemon_scan_network() -> NoReturn:
 
 
 def main():
-    d = threading.Thread(target=daemon_scan_network, name='scan_network')
-    d.setDaemon(True)
+    d = threading.Thread(target=daemon_scan_network, daemon=True, name='scan_network')
     d.start()
 
     try:
         bot.send_message(owner_bot, "Starting bot", reply_markup=get_markup_cmd(), disable_notification=True)
-        logger.info('Starting bot')
+        log.info('Starting bot')
     except (apihelper.ApiException, exceptions.ReadTimeout) as e:
-        logger.critical(f'Error in init bot: {e}')
+        log.critical(f'Error in init bot: {e}')
         sys.exit(1)
 
     # Con esto, le decimos al bot que siga funcionando incluso si encuentra algun fallo.
