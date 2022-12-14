@@ -325,7 +325,7 @@ def send_pdf(message: types.Message) -> NoReturn:
         execute, file = latex_to_pdf(string_latex)
 
         if execute.returncode == 0:
-            # IMPORTANTE para que el dicumento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
+            # IMPORTANTE para que el documento tenga nombre en tg tiene que enviarse un _io.BufferedReader con open()
             bot.send_document(msg.chat.id, file, reply_markup=get_markup_cmd(), )
         else:  # Si la salida del comando excede el limite de mensaje de Telegram se trunca
             send_message_safe(message, execute.stdout.decode('utf-8'))
