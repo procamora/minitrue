@@ -31,3 +31,4 @@ terminaltables
 
 # Customizar template latex
 jinja2
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
